@@ -22,7 +22,8 @@ class _AppLoginState extends State<AppLogin> {
   
   bool validateData (User userData) {
     ValidateUsers authenticate = ValidateUsers();
-    return authenticate.validateUser(userData);
+    return authenticate.dummyValidation(userData);
+    //return authenticate.validateUser(userData);
   }
 
   String? validateEmail(String? text){
@@ -45,6 +46,9 @@ class _AppLoginState extends State<AppLogin> {
   
   @override
   Widget build(BuildContext context) {
+
+    final textStyle = Theme.of(context).textTheme;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Changas Ya'),
@@ -57,14 +61,19 @@ class _AppLoginState extends State<AppLogin> {
           children: [
         
             Container(
-              margin: const EdgeInsets.only(bottom: 20.0),
+              margin: const EdgeInsets.only(bottom: 5.0),
               width: double.infinity,
               height: 200,
               child: Image.asset(
                 'lib/images/login_banner.png',
                 fit: BoxFit.cover),
             ),
-        
+
+            Container(
+              margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
+              child: Text('> Ingrese a la aplicación <', style: textStyle.titleLarge,)
+            ),
+
             Container(
               margin: EdgeInsets.symmetric(horizontal: 10.0),
               child: TextFormField(
@@ -115,25 +124,19 @@ class _AppLoginState extends State<AppLogin> {
                 FilledButton(onPressed: () {
                   User newUser = User(_inputName, _inputPassword);
                   if (validateData(newUser)){
-                    final snackBar = SnackBar(content: Text('LogIn Exitoso!'));
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    
                     context.push('/jobs', extra: {newUser.name});
-                  } 
-                  
+                  }     
                 }, 
                 child: Text('Iniciar sesión'),
               ),
-                
                 
                 SizedBox(width: 10.0,),
                 Text("ó"),
                 SizedBox(width: 10.0,),
                 
                 FilledButton.tonal(onPressed: () {
-                  User newUser = User(_inputName, _inputPassword);
-                  if (validateData(newUser)){
-                    context.push('/jobs', extra: {newUser.name});
-                  } 
+                  context.push('/signup');
                 }, child: Text('Registarse')),
               ],
             ),

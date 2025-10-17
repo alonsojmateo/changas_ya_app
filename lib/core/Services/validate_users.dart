@@ -23,4 +23,12 @@ class ValidateUsers {
     return lista;
   }
 
+
+/*
+ * Function used to test the app login.
+ */
+  bool dummyValidation(User testUser){
+     return (testUser.name == 'user@test.com' && testUser.password == "Pass123#");
+  }
+
 }
