@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:changas_ya_app/Domain/User/user.dart';
 import 'package:changas_ya_app/core/Services/validate_users.dart';
+import 'package:changas_ya_app/core/Services/field_validation.dart';
 
 class AppLogin extends StatefulWidget {
   static const String name = 'login';
@@ -15,10 +16,12 @@ class _AppLoginState extends State<AppLogin> {
 
   // Agregar instancia de objeto usuario.
   
-  late TextEditingController nameController = TextEditingController();
+  late TextEditingController emailController = TextEditingController();
   late TextEditingController passwordController = TextEditingController();
-  String _inputName = '';
+  String _inputEmail = '';
   String _inputPassword = '';
+
+  FieldValidation validation = FieldValidation();
   
   bool validateData (User userData) {
     ValidateUsers authenticate = ValidateUsers();
@@ -26,19 +29,6 @@ class _AppLoginState extends State<AppLogin> {
     //return authenticate.validateUser(userData);
   }
 
-  String? validateEmail(String? text){
-    if (text == null || !text.contains('@') || !text.contains('.com')) {
-      return 'Debe contener "@" y ".com"';
-    }
-    return null;
-  }
-
-  String? validatePassword(String? password){
-    if (password == null ||  password.length < 8){
-      return '';
-    }
-    return null;
-  }
   // void showSnackBar(String messageValue){
   //   final showMessage = SnackbarStateless(message: messageValue,).build(context);
   //   ScaffoldMessenger.of(context).showSnackBar(showMessage);
@@ -77,11 +67,11 @@ class _AppLoginState extends State<AppLogin> {
             Container(
               margin: EdgeInsets.symmetric(horizontal: 10.0),
               child: TextFormField(
-                controller: nameController,
+                controller: emailController,
                 onChanged: (String nameValue) {
-                  if (nameController.text.isNotEmpty){
+                  if (emailController.text.isNotEmpty){
                     setState(() {
-                      _inputName = nameController.text;
+                      _inputEmail = emailController.text;
                     });
                   }                
                 },
@@ -89,7 +79,7 @@ class _AppLoginState extends State<AppLogin> {
                 decoration: InputDecoration(border: OutlineInputBorder(), 
                                             labelText: 'E-Mail'),
                 autovalidateMode: AutovalidateMode.onUnfocus,
-                validator: (String? text) { return validateEmail(text); }
+                validator: (String? text) { return validation.validateEmail(text); }
               ),
             ),
         
@@ -112,7 +102,7 @@ class _AppLoginState extends State<AppLogin> {
                   labelText: 'Contraseña',
                   ),
                 autovalidateMode: AutovalidateMode.onUnfocus,
-                validator: (String? password) { return validatePassword(password); },
+                validator: (String? password) { return validation.validatePassword(password); },
               ),
             ),
             
@@ -122,10 +112,10 @@ class _AppLoginState extends State<AppLogin> {
               mainAxisAlignment:  MainAxisAlignment.center,
               children: [
                 FilledButton(onPressed: () {
-                  User newUser = User(_inputName, _inputPassword);
+                  User newUser = User('', _inputEmail, _inputPassword);
                   if (validateData(newUser)){
                     
-                    context.push('/jobs', extra: {newUser.name});
+                    context.push('/jobs', extra: {newUser.getName()});
                   }     
                 }, 
                 child: Text('Iniciar sesión'),
@@ -152,7 +142,6 @@ class _AppLoginState extends State<AppLogin> {
                   //TextButton(onPressed: () => { context.push(/nosotros)}, child: Text("Nosotros")),
                   TextButton(onPressed: (){}, child: Text("Nosotros", style: TextStyle(fontSize: 12.0),))
               ]
-              
             )
           ],
         ),

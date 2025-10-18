@@ -18,8 +18,8 @@ class ValidateUsers {
     
     getUsersList();
     bool lista = listOfAuthUsers.any((user) => (
-      user.name == userToValidate.name && 
-      user.password == userToValidate.password));
+      user.getEmail() == userToValidate.getEmail() && 
+      user.getPassword() == userToValidate.getPassword()));
     return lista;
   }
 
@@ -28,7 +28,7 @@ class ValidateUsers {
  * Function used to test the app login.
  */
   bool dummyValidation(User testUser){
-     return (testUser.name == 'user@test.com' && testUser.password == "Pass123#");
+     return (testUser.getEmail() == 'user@test.com' && testUser.getPassword() == "Pass123#");
   }
 
 }

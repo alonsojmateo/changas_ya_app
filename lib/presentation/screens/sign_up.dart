@@ -1,4 +1,6 @@
+import 'package:changas_ya_app/Domain/User/user.dart';
 import 'package:flutter/material.dart';
+import 'package:changas_ya_app/core/Services/field_validation.dart';
 
 class SignUp extends StatefulWidget {
   static const String  name = 'signup';
@@ -11,6 +13,9 @@ class SignUp extends StatefulWidget {
 
 class _AppSignUp extends State<SignUp> {
 
+
+  FieldValidation validation = FieldValidation();
+
   late TextEditingController nameController = TextEditingController();
   late TextEditingController emailController = TextEditingController();
   late TextEditingController passwordController = TextEditingController();
@@ -19,22 +24,6 @@ class _AppSignUp extends State<SignUp> {
   String _inputEmail = '';
   String _inputPassword = '';
   String _inputConfirmedPassword = '';
-
-
-  String? validateEmail(String? text){
-    if (text == null || !text.contains('@') || !text.contains('.com')) {
-      return 'Debe contener "@" y ".com"';
-    }
-    return null;
-  }
-
-  String? validatePassword(String? password){
-    if (password == null ||  password.length < 8){
-      return 'Reingrese la contraseña';
-    }
-    return null;
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +102,7 @@ class _AppSignUp extends State<SignUp> {
                   labelText: 'E-Mail',
                   ),
                 autovalidateMode: AutovalidateMode.onUnfocus,
-                validator: (String? email) { return validateEmail(email); },
+                validator: (String? email) { return validation.validateEmail(email); },
               ),
             ),
 
@@ -135,14 +124,11 @@ class _AppSignUp extends State<SignUp> {
                   labelText: 'Contraseña',
                   ),
                 autovalidateMode: AutovalidateMode.onUnfocus,
-                validator: (String? password) { return validatePassword(password); },
+                validator: (String? password) { return validation.validatePassword(password); },
               ),
             ),
 
             //Confirm password
-            //TODO: Change the validation process. It should use '_inputPassword' and check
-            //if both passwords are equal. Or we can search for a automated function to 
-            //solve the problem.
             Container(
               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
               child: TextFormField(
@@ -160,7 +146,12 @@ class _AppSignUp extends State<SignUp> {
                   labelText: 'Confirmar contraseña',
                   ),
                 autovalidateMode: AutovalidateMode.onUnfocus,
-                validator: (String? confirmedPassword) { return validatePassword(confirmedPassword); },
+                validator: (String? confirmedPassword) { 
+                  if (_inputPassword.isEmpty){
+                    return 'Primero ingrese una contraseña válida.';
+                  }
+                  return validation.confirmPassword(_inputPassword, confirmedPassword); 
+                },
               ),
             ),
 
