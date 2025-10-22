@@ -1,28 +1,30 @@
 import 'package:changas_ya_app/Domain/Job/job.dart';
-import 'package:changas_ya_app/core/data/job_datasource.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 final currentClientIdProvider = StateProvider<String>((ref) => 'test-client-mock');
+final firebaseFirestoreProvider = Provider((ref) => FirebaseFirestore.instance);
 
 class JobNotifier extends StateNotifier<List<Job>> {
   final String _currentClientId;
+  final FirebaseFirestore _db;
 
-  JobNotifier(this._currentClientId) : super([]);
+  JobNotifier(this._currentClientId, this._db) : super([]);
 
   Future<void> getPublishedJobsByClient() async {
-    // Debe retornar los trabajos publicados por cliente activo
     try {
-      await Future.delayed(const Duration(milliseconds: 700)); 
-      
-      // 2. Obtiene los 3 trabajos fijos, pasando el ID del cliente
-      final jobs = getMockJobsByClient(_currentClientId);
-      
-      // 3. Actualiza el estado, notificando a la UI
+      final jobsCollection = _db.collection('trabajos').withConverter(
+        fromFirestore: Job.fromFirestore,
+        toFirestore: (Job job, _) => job.toFirestore(),
+      );
+      final query = jobsCollection.where('clientId', isEqualTo: _currentClientId);
+      final snapshot = await query.get();
+      final jobs = snapshot.docs.map((doc) => doc.data()).toList();
       state = jobs;
       
     } catch (e) {
-      print('Error al cargar trabajos publicados: $e');
-      // En caso de fallo, el estado queda vacío
+      print('Error al cargar trabajos publicados desde Firebase: $e');
       state = []; 
     }
   }
@@ -30,6 +32,7 @@ class JobNotifier extends StateNotifier<List<Job>> {
 
 final jobProvider = StateNotifierProvider<JobNotifier, List<Job>>((ref) {
   final clientId = ref.watch(currentClientIdProvider); 
+  final db = ref.watch(firebaseFirestoreProvider);
   
-  return JobNotifier(clientId);
+  return JobNotifier(clientId, db);
 });
