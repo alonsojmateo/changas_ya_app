@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:changas_ya_app/core/Services/field_validation.dart';
 import 'package:changas_ya_app/presentation/components/banner_widget.dart';
 import 'package:changas_ya_app/presentation/components/app_bar.dart';
+import 'package:changas_ya_app/core/Services/user_auth_controller.dart';
 
 class SignUp extends StatefulWidget {
   static const String name = 'signup';
@@ -27,27 +28,42 @@ class _AppSignUp extends State<SignUp> {
 
   // Key to identify the form.
   final _formkey = GlobalKey<FormState>();
+  final UserAuthController _auth = UserAuthController();
 
   // Use the form data, validate it and submmit it to the data base.
-  void _submitRegister() {
+  Future<void> _submitRegister() async {
     String snackBarMessage = '';
     Color? snackBarColor = Colors.black;
-    User newUser = User(_inputName, _inputEmail, _inputPassword);
 
     if (_formkey.currentState!.validate()) {
-      // Agregar la lógica de registro para un nuevo usuario.
-      String userName = newUser.getName();
-      snackBarMessage = "¡$userName, fuiste registrado con éxito!";
-      snackBarColor = Colors.green[400];
+      
+      User newUser = User(_inputName, _inputEmail, _inputPassword);
+      try {
+        
+        await _auth.registerUser(newUser.getEmail(), newUser.getPassword());
+
+        snackBarMessage = '¡Usuario registraso con exito!';
+        snackBarColor = Colors.green[400];
+
+      } on Exception catch (e) {
+        snackBarMessage = e.toString();
+        snackBarColor = Colors.red[400];
+      }
+      
     } else {
-      snackBarMessage = 'No se pudo registrar el usuario';
+      snackBarMessage = 'Verifique los valores ingresados en el formulario.';
       snackBarColor = Colors.red[400];
     }
-    SnackBar snackBar = SnackBar(
-      content: Text(snackBarMessage),
-      backgroundColor: snackBarColor,
-      );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    
+    snackBarPopUp(snackBarMessage, snackBarColor);
+  }
+
+  void snackBarPopUp (String message, Color? background){
+  SnackBar snackBar = SnackBar(
+        content: Text(message),
+        backgroundColor: background,
+        );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override

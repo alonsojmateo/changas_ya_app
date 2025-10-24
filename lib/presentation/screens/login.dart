@@ -23,6 +23,29 @@ class _AppLoginState extends State<AppLogin> {
 
   FieldValidation validation = FieldValidation();
 
+  final _logInFormkey = GlobalKey<FormState>();
+
+  void validateChange(){
+      String snackBarMessage = '';
+      Color? snackBarColor = Colors.black;
+      if (_logInFormkey.currentState!.validate()){
+        snackBarMessage = '¡Sesión inciada! ';
+        snackBarColor = Colors.green[400];
+      } else {
+        snackBarMessage = 'Ocurrió un problema...';
+        snackBarColor = Colors.red[400];
+      }
+
+      final SnackBar snackBar = SnackBar(
+        content: Text(snackBarMessage), 
+        backgroundColor: snackBarColor, 
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+
+
+
+
   bool validateData(User userData) {
     ValidateUsers authenticate = ValidateUsers();
     return authenticate.dummyValidation(userData);
@@ -40,132 +63,143 @@ class _AppLoginState extends State<AppLogin> {
       ),
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(bottom: 5.0),
-              width: double.infinity,
-              height: 200,
-              child: Image.asset(
-                'lib/images/login_banner.png',
-                fit: BoxFit.cover,
-              ),
-            ),
-
-            Container(
-              margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
-              child: Text(
-                '> Ingrese a la aplicación <',
-                style: textStyle.titleLarge,
-              ),
-            ),
-
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 10.0),
-              child: TextFormField(
-                controller: emailController,
-                onChanged: (String nameValue) {
-                  if (emailController.text.isNotEmpty) {
-                    setState(() {
-                      _inputEmail = emailController.text;
-                    });
-                  }
-                },
-                obscureText: false,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'E-Mail',
+        child: Form(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(bottom: 5.0),
+                width: double.infinity,
+                height: 200,
+                child: Image.asset(
+                  'lib/images/login_banner.png',
+                  fit: BoxFit.cover,
                 ),
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (String? text) {
-                  return validation.validateEmail(text);
-                },
               ),
-            ),
 
-            SizedBox(height: 20),
-
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 10.0),
-              child: TextFormField(
-                controller: passwordController,
-                onChanged: (String passwordValue) {
-                  if (passwordController.text.isNotEmpty) {
-                    setState(() {
-                      _inputPassword = passwordController.text;
-                    });
-                  }
-                },
-                obscureText: true,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Contraseña',
+              Container(
+                margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
+                child: Text(
+                  '> Ingrese a la aplicación <',
+                  style: textStyle.titleLarge,
                 ),
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (String? password) {
-                  return validation.validatePassword(password);
-                },
               ),
-            ),
 
-            TextButton(
-              onPressed: () {
-                context.push('/changePassword');
-              },
-              child: Text("¿Cambiar contraseña?", style: textStyle.labelMedium),
-            ),
-
-            SizedBox(height: 10.0),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    User newUser = User('', _inputEmail, _inputPassword);
-                    if (validateData(newUser)) {
-                      context.go('/', extra: {newUser.getName()});
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 10.0),
+                child: TextFormField(
+                  controller: emailController,
+                  onChanged: (String nameValue) {
+                    if (emailController.text.isNotEmpty) {
+                      setState(() {
+                        _inputEmail = emailController.text;
+                      });
                     }
                   },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue[400]
+                  obscureText: false,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'E-Mail',
                   ),
-                  child: Text('Iniciar sesión', style: TextStyle(color: Colors.white)),
-                ),
-
-                SizedBox(width: 10.0),
-                Text("ó"),
-                SizedBox(width: 10.0),
-
-                ElevatedButton(
-                  onPressed: () {
-                    context.push('/signup');
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (String? text) {
+                    return validation.validateEmail(text);
                   },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue[100]
-                  ),
-                  child: Text('Registarse', style: TextStyle(color: Colors.grey[800])),
                 ),
-              ],
-            ),
+              ),
 
-            SizedBox(height: 20.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Instituto Tecnológico ORT - 2025',
+              SizedBox(height: 20),
+
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 10.0),
+                child: TextFormField(
+                  controller: passwordController,
+                  onChanged: (String passwordValue) {
+                    if (passwordController.text.isNotEmpty) {
+                      setState(() {
+                        _inputPassword = passwordController.text;
+                      });
+                    }
+                  },
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Contraseña',
+                  ),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (String? password) {
+                    return validation.validatePassword(password);
+                  },
+                ),
+              ),
+
+              TextButton(
+                onPressed: () {
+                  context.push('/changePassword');
+                },
+                child: Text(
+                  "¿Cambiar contraseña?",
                   style: textStyle.labelMedium,
                 ),
-                //TextButton(onPressed: () => { context.push(/nosotros)}, child: Text("Nosotros", style: textStyle.labelMedium)),
-                TextButton(
-                  onPressed: () {},
-                  child: Text("Nosotros", style: textStyle.labelMedium,)
-                ),
-              ],
-            ),
-          ],
+              ),
+
+              SizedBox(height: 10.0),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      User newUser = User('', _inputEmail, _inputPassword);
+                      if (validateData(newUser)) {
+                        context.go('/', extra: {newUser.getName()});
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue[400],
+                    ),
+                    child: Text(
+                      'Iniciar sesión',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+
+                  SizedBox(width: 10.0),
+                  Text("ó"),
+                  SizedBox(width: 10.0),
+
+                  ElevatedButton(
+                    onPressed: () {
+                      context.push('/signup');
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue[100],
+                    ),
+                    child: Text(
+                      'Registarse',
+                      style: TextStyle(color: Colors.grey[800]),
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 20.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Instituto Tecnológico ORT - 2025',
+                    style: textStyle.labelMedium,
+                  ),
+                  //TextButton(onPressed: () => { context.push(/nosotros)}, child: Text("Nosotros", style: textStyle.labelMedium)),
+                  TextButton(
+                    onPressed: () {},
+                    child: Text("Nosotros", style: textStyle.labelMedium),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
