@@ -4,6 +4,7 @@ import 'package:changas_ya_app/Domain/User/user.dart';
 import 'package:changas_ya_app/core/Services/validate_users.dart';
 import 'package:changas_ya_app/core/Services/field_validation.dart';
 import 'package:changas_ya_app/presentation/components/app_bar.dart';
+import 'package:changas_ya_app/core/Services/user_auth_controller.dart';
 
 class AppLogin extends StatefulWidget {
   static const String name = 'login';
@@ -22,30 +23,47 @@ class _AppLoginState extends State<AppLogin> {
   String _inputPassword = '';
 
   FieldValidation validation = FieldValidation();
+  final UserAuthController _auth = UserAuthController();
 
   final _logInFormkey = GlobalKey<FormState>();
 
-  void validateChange(){
+  //Validate the usser credentials using the auth controller.
+  Future<bool> _validateUserCredentials(User user) async {
+
+      bool isAuthenticated = false;
       String snackBarMessage = '';
       Color? snackBarColor = Colors.black;
+
       if (_logInFormkey.currentState!.validate()){
-        snackBarMessage = '¡Sesión inciada! ';
-        snackBarColor = Colors.green[400];
+        try{
+          
+          await _auth.userLogIn(user.getEmail(), user.getPassword());
+          
+          isAuthenticated = true;
+          snackBarMessage = '¡Sesión inciada! ';
+          snackBarColor = Colors.green[400];
+        } on Exception catch (e){
+          snackBarMessage = e.toString();
+          snackBarColor = Colors.red[400];
+        }
       } else {
         snackBarMessage = 'Ocurrió un problema...';
         snackBarColor = Colors.red[400];
       }
 
-      final SnackBar snackBar = SnackBar(
-        content: Text(snackBarMessage), 
-        backgroundColor: snackBarColor, 
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
+      snackBarPopUp(snackBarMessage, snackBarColor);
+      return isAuthenticated;
+  }
 
+  void snackBarPopUp (String message, Color? background){
+    SnackBar snackBar = SnackBar(
+          content: Text(message),
+          backgroundColor: background,
+          );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 
-
-
+  // Test validation
   bool validateData(User userData) {
     ValidateUsers authenticate = ValidateUsers();
     return authenticate.dummyValidation(userData);
@@ -64,6 +82,7 @@ class _AppLoginState extends State<AppLogin> {
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
         child: Form(
+          key: _logInFormkey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -149,10 +168,10 @@ class _AppLoginState extends State<AppLogin> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    onPressed: () {
-                      User newUser = User('', _inputEmail, _inputPassword);
-                      if (validateData(newUser)) {
-                        context.go('/', extra: {newUser.getName()});
+                    onPressed: ()async {
+                      User userToAuthenticate = User('', _inputEmail, _inputPassword);
+                      if (await _validateUserCredentials(userToAuthenticate) && context.mounted){
+                        context.push('/');
                       }
                     },
                     style: ElevatedButton.styleFrom(

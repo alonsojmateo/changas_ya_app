@@ -33,7 +33,7 @@ class _AppSignUp extends State<SignUp> {
   // Use the form data, validate it and submmit it to the data base.
   Future<void> _submitRegister() async {
     String snackBarMessage = '';
-    Color? snackBarColor = Colors.black;
+    Color? snackBarColor = Colors.red[400];
 
     if (_formkey.currentState!.validate()) {
       
@@ -47,12 +47,10 @@ class _AppSignUp extends State<SignUp> {
 
       } on Exception catch (e) {
         snackBarMessage = e.toString();
-        snackBarColor = Colors.red[400];
       }
       
     } else {
       snackBarMessage = 'Verifique los valores ingresados en el formulario.';
-      snackBarColor = Colors.red[400];
     }
     
     snackBarPopUp(snackBarMessage, snackBarColor);
