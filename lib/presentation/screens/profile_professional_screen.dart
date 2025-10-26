@@ -26,6 +26,7 @@ class ProfileProfesionalScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
+// SON DATOS HARDOCODEADOS PARA TESTEAR LA PANTALLA, REEMPLAZAR LUEGO CON DATOS REALES, CON LA MISMA LOGICA QUE JOBS. USANDO PROVIDER, PARA USAR MOCK.
             // Nombre completo
             const Center(
               child: Text(
