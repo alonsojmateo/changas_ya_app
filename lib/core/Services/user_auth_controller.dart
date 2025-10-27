@@ -67,7 +67,7 @@ class UserAuthController {
 
   Future<void> changeUserPassword(String email, String oldPassword, String newPassword) async {
 
-    if (!_isUserAuthenticated()){
+    if (_isUserAuthenticated()){
       try {
         await userLogIn(email, oldPassword);
       } catch (e){

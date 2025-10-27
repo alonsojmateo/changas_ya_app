@@ -3,6 +3,7 @@ import 'package:changas_ya_app/presentation/components/banner_widget.dart';
 import 'package:changas_ya_app/core/Services/field_validation.dart';
 import 'package:changas_ya_app/presentation/components/app_bar.dart';
 import 'package:changas_ya_app/core/Services/user_auth_controller.dart';
+import 'package:go_router/go_router.dart';
 
 class ChangePassword extends StatefulWidget {
   static const String screenName = 'changePassword';
@@ -35,7 +36,7 @@ class _AppChangePassword extends State<ChangePassword> {
   final UserAuthController _auth = UserAuthController();
 
   // Validate the password change.
-  Future<void> validateChange() async {
+  Future<void> _validateChange() async {
     String snackBarMessage = '';
     Color? snackBarColor = Colors.red[400];
 
@@ -209,7 +210,12 @@ class _AppChangePassword extends State<ChangePassword> {
                   SizedBox(height: 20.0),
 
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: ()  async {
+                      await _validateChange();
+                      if (context.mounted){
+                        context.push('/');
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue[400],
                     ),

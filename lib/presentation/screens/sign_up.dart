@@ -198,8 +198,8 @@ class _AppSignUp extends State<SignUp> {
                   SizedBox(height: 20.0),
 
                   ElevatedButton(
-                    onPressed: () {
-                      _submitRegister();
+                    onPressed: () async {
+                      await _submitRegister();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue[400],
