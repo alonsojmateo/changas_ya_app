@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:changas_ya_app/Domain/User/user.dart';
 
 class UserAuthController {
 
@@ -63,6 +64,46 @@ class UserAuthController {
       await _auth.signOut();
     } catch (e){
       throw Exception('Ocurrió un error al cerrar sesión.');
+    }
+  }
+
+  Future<void> changeUserPassword(String email, String oldPassword, String newPassword) async {
+
+    if (!_isUserAuthenticated()){
+      try {
+        await userLogIn(email, oldPassword);
+      } catch (w){
+        throw Exception('Ocurrió un error durante la autenticación.');
+      }
+    }
+
+    User? user = _auth.currentUser;
+
+    try {
+      await _changePassword(user, newPassword);
+    } catch (e){
+      throw Exception(e.toString());
+    }
+  }
+
+  bool _isUserAuthenticated(){
+    return _auth.currentUser != null;
+  }
+
+  Future<void> _changePassword(User? user, String newPassword) async {
+    try {
+      // Use the null check operator on 'user' for the update.
+      await user!.updatePassword(newPassword);
+
+    } on FirebaseException catch (e){
+      if (e.code == 'weak-password'){
+        throw Exception('Contraseña débil.');
+      } else if (e.code == 'requires-recent-login'){
+        throw Exception('Debe volver a inciar sesión');
+      }
+    } catch (e) {
+      String errorMessage = e.toString();
+      throw Exception('Error desconocido: $errorMessage');
     }
     
   }
