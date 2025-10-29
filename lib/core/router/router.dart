@@ -1,4 +1,6 @@
+import 'package:changas_ya_app/Domain/Job/job.dart';
 import 'package:changas_ya_app/presentation/screens/home_screen.dart';
+import 'package:changas_ya_app/presentation/screens/job_detail.dart';
 import 'package:changas_ya_app/presentation/screens/jobs_screen.dart';
 import 'package:changas_ya_app/presentation/screens/login.dart';
 import 'package:changas_ya_app/presentation/screens/sign_up.dart';
@@ -41,5 +43,12 @@ final appRouter = GoRouter(
         ),
       ],
     ),
+    GoRoute(
+      path: '/jobDetail',
+      name: JobDetail.name,
+      builder: (context, state){
+        return JobDetail(job: state.extra as Job);
+      }
+    )
   ],
 );
