@@ -1,4 +1,5 @@
-import 'package:changas_ya_app/presentation/providers/jobDetail_provider.dart';
+import 'package:changas_ya_app/presentation/providers/job_detail_provider.dart';
+import 'package:changas_ya_app/presentation/widgets/profile_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -61,7 +62,7 @@ class JobDetail extends ConsumerWidget {
 
             const SizedBox(height: 16),
             Text("Profesional", style: Theme.of(context).textTheme.titleMedium),
-            // WorkerCard(worker: worker),
+            ProfileCard(profileId: "6mRcVhn1CEMAe8NzBYg4d4ZOI4H3"),
 
             const SizedBox(height: 20),
             Text("Calificar profesional:", style: Theme.of(context).textTheme.titleMedium),
