@@ -3,8 +3,28 @@ import 'package:flutter/material.dart';
 class NosotrosScreen extends StatelessWidget {
   const NosotrosScreen({super.key});
 
+  static const List<String> integrantes = [
+    'Juan Mateo Alonso de Armiño',
+    'Fernando Sánchez',
+    'Benjamín Francisco',
+    'Gonzalo Slullitel',
+    'Santiago Lopez Cane',
+    'Ezequiel Meister',
+  ];
+
+  static const List<String> materias = [
+    'Proyecto Final',
+    'Analista de Sistemas',
+  ];
+
+  TextStyle get titleStyle => const TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
+  TextStyle get bodyStyle => const TextStyle(fontSize: 16);
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sobre Nosotros'),
@@ -15,72 +35,58 @@ class NosotrosScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Imagen del equipo o logo genérico (REVISAR)
-            const Center(
+            // Imagen del equipo
+            Center(
               child: CircleAvatar(
                 radius: 60,
-                backgroundImage: AssetImage('lib/images/equipo_generico.png'),
+                backgroundImage: const AssetImage('lib/images/equipo_generico.png'),
+                backgroundColor: isDark ? Colors.grey[800] : Colors.grey[200],
               ),
             ),
             const SizedBox(height: 24),
 
             // Nombre del equipo
-            const Center(
+            Center(
               child: Text(
                 'Equipo de Desarrollo - Changas Ya!',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
             ),
             const SizedBox(height: 24),
 
-            // Descripción de la empresa/app
-            const Text(
+            // Descripción de la empresa
+            Text(
               'Somos un equipo de estudiantes del Instituto Tecnológico ORT '
               'dedicados a crear soluciones digitales que conectan clientes '
               'con profesionales de manera rápida y confiable. Nuestra misión '
               'es simplificar el proceso de búsqueda de servicios, brindando una '
               'plataforma eficiente y segura.',
               textAlign: TextAlign.justify,
-              style: TextStyle(fontSize: 16),
+              style: bodyStyle.copyWith(color: theme.textTheme.bodyMedium?.color),
             ),
             const SizedBox(height: 24),
 
             // Integrantes
-            const Text(
-              'Integrantes del equipo:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+            Text('Integrantes del equipo:', style: titleStyle),
             const SizedBox(height: 8),
-            const Text('• Juan Mateo Alonso de Armiño'),
-            const Text('• Fernando Sánchez'),
-            const Text('• Benjamín Francisco'),
-            const Text('• Gonzalo Slullitel'),
-            const Text('• Santiago Lopez Cane'),
-            const Text('• Ezequiel Meister'),
+            ...integrantes.map((i) => Text('• $i', style: bodyStyle.copyWith(color: theme.textTheme.bodyMedium?.color))),
             const SizedBox(height: 24),
 
             // Materias relacionadas
-            const Text(
-              'Materias relacionadas:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+            Text('Materias relacionadas:', style: titleStyle),
             const SizedBox(height: 8),
-            const Text('• Proyecto Final'),
-            const Text('• Analista de Sistemas'),
+            ...materias.map((m) => Text('• $m', style: bodyStyle.copyWith(color: theme.textTheme.bodyMedium?.color))),
             const SizedBox(height: 24),
 
             // Información institucional
-            const Text(
-              'Información institucional:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+            Text('Información institucional:', style: titleStyle),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'Instituto Tecnológico ORT Argentina\n'
               'Carrera: Analista de Sistemas\n'
               'Año: 2025',
-              style: TextStyle(fontSize: 16),
+              style: bodyStyle.copyWith(color: theme.textTheme.bodyMedium?.color),
             ),
           ],
         ),
