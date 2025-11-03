@@ -1,3 +1,5 @@
+import 'package:changas_ya_app/presentation/providers/navigation_provider.dart';
+import 'package:changas_ya_app/presentation/screens/jobs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:changas_ya_app/presentation/screens/jobs_screen.dart';
@@ -15,14 +17,11 @@ class HomeScreen extends ConsumerWidget {
       const JobsScreen(),
       const Center(child: Text("Pantalla de Crear (Pendiente)")),
       const Center(child: Text("Pantalla de Favoritos (Pendiente)")),
-      const ProfileScreen(),
+      const Center(child: Text("Pantalla de Perfil (Pendiente)")),
     ];
 
     return Scaffold(
-      body: IndexedStack(
-        index: selectedIndex,
-        children: screens,
-      ),
+      body: IndexedStack(index: selectedIndex, children: screens),
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
         onDestinationSelected: (index) {
@@ -30,21 +29,25 @@ class HomeScreen extends ConsumerWidget {
         },
         destinations: const [
           NavigationDestination(
-              icon: Icon(Icons.work_outline),
-              selectedIcon: Icon(Icons.work),
-              label: 'Trabajos'),
+            icon: Icon(Icons.work_outline),
+            selectedIcon: Icon(Icons.work),
+            label: 'Trabajos',
+          ),
           NavigationDestination(
-              icon: Icon(Icons.add_outlined),
-              selectedIcon: Icon(Icons.add),
-              label: 'Crear'),
+            icon: Icon(Icons.add_outlined),
+            selectedIcon: Icon(Icons.add),
+            label: 'Crear',
+          ),
           NavigationDestination(
-              icon: Icon(Icons.favorite_outline),
-              selectedIcon: Icon(Icons.favorite),
-              label: 'Favoritos'),
+            icon: Icon(Icons.favorite_outline),
+            selectedIcon: Icon(Icons.favorite),
+            label: 'Favoritos',
+          ),
           NavigationDestination(
-              icon: Icon(Icons.person_outline),
-              selectedIcon: Icon(Icons.person),
-              label: 'Perfil'),
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person),
+            label: 'Perfil',
+          ),
         ],
       ),
     );
