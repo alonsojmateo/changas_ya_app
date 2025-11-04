@@ -54,7 +54,7 @@ class BidsScreen extends ConsumerWidget {
             itemCount: bids.length,
             itemBuilder: (context, index) {
               final bid = bids[index];
-              return BidCard(bid: bid); 
+              return BidCard(bid: bid, onTap: () => {print("H")},); 
             },
           );
         }
