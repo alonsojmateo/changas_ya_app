@@ -1,4 +1,5 @@
 import 'package:changas_ya_app/presentation/providers/profile_provider.dart';
+import 'package:changas_ya_app/presentation/widgets/rating_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -52,23 +53,7 @@ class SimpleProfile extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.green[400],
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        'Cal. ${rating.toStringAsFixed(1)}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
+                    RatingChip(profileId: profile.uid),
                     const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(
