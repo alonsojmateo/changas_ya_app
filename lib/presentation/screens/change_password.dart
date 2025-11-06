@@ -61,7 +61,8 @@ class ChangePassword extends ConsumerWidget {
         snackBarMessage = e.showErrorMessage();
       }
     } else {
-      snackBarMessage = 'Ocurrió un problema...';
+      _snackBarMessage = 'Ocurrió un problema...';
+      _snackBarColor = Colors.red[400];
     }
 
     snackBarPopUp(snackBarMessage, snackBarColor);
