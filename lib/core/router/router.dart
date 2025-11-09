@@ -20,11 +20,6 @@ final appRouter = GoRouter(
       builder: (context, state) => const AppLogin(),
     ),
     GoRoute(
-      path: '/logout',
-      name: "logout",
-      builder: (context, state) =>  LogOutAlert(),
-    ),
-    GoRoute(
       path: '/signup',
       name: SignUp.name,
       builder: (context, state) => const SignUp(),
