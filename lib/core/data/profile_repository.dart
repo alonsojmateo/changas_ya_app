@@ -10,28 +10,33 @@ class ProfileRepository {
 
   Future<Profile?> fetchProfileById(String id) async {
     try {
-      final usersCollection = _db.collection(_collectionName).withConverter<Profile>(
-        fromFirestore: (snapshot, _) => Profile.fromFirestore(snapshot.data()!, snapshot.id),
-        toFirestore: (Profile profile, _) => profile.toFirestore(),
-      );
+      final usersCollection = _db
+          .collection(_collectionName)
+          .withConverter<Profile>(
+            fromFirestore: (snapshot, _) =>
+                Profile.fromFirestore(snapshot.data()!, snapshot.id),
+            toFirestore: (Profile profile, _) => profile.toFirestore(),
+          );
 
       final docSnapshot = await usersCollection.doc(id).get();
       return docSnapshot.data();
-      
     } catch (e) {
       print('Error en UserRepository.fetchUserById: $e');
-      throw Exception('Fallo al obtener el usuario.'); 
+      throw Exception('Fallo al obtener el usuario.');
     }
   }
 
   Future<void> updateProfile(Profile profile) async {
-      final profilesCollection = _db.collection(_collectionName).withConverter<Profile>(
-        fromFirestore: (snapshot, _) => Profile.fromFirestore(snapshot.data()!, snapshot.id),
-        toFirestore: (Profile profile, _) => profile.toFirestore(),
-      );
-      
-      final profileRef = profilesCollection.doc(profile.uid);
-      await profileRef.set(profile, SetOptions(merge: true)); // El merge true es para que mergee los cambios y no reemplace
+    final profilesCollection = _db
+        .collection(_collectionName)
+        .withConverter<Profile>(
+          fromFirestore: (snapshot, _) =>
+              Profile.fromFirestore(snapshot.data()!, snapshot.id),
+          toFirestore: (Profile profile, _) => profile.toFirestore(),
+        );
+
+    final profileRef = profilesCollection.doc(profile.uid);
+    await profileRef.set(profile, SetOptions(merge: true)); 
   }
 
   Future<void> registerUserProfile(Profile data, String? uuid) async {
@@ -53,5 +58,16 @@ class ProfileRepository {
             errorMessage: e.toString(),
           ),
         );
+  }
+
+  // 👇 Este va fuera, no dentro de registerUserProfile
+  Future<void> updateProfilePhoto(String uid, String imageUrl) async {
+    try {
+      await _db.collection(_collectionName).doc(uid).update({
+        'photoUrl': imageUrl,
+      });
+    } catch (e) {
+      throw Exception('Error al actualizar la foto de perfil: $e');
+    }
   }
 }

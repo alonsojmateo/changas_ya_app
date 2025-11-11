@@ -46,7 +46,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '563535673587',
     projectId: 'changas-ya-cd978',
     authDomain: 'changas-ya-cd978.firebaseapp.com',
-    storageBucket: 'changas-ya-cd978.firebasestorage.app',
+    storageBucket: 'changas-ya-cd978.appspot.com',
     measurementId: 'G-P2LF4VX52N',
   );
 
@@ -55,7 +55,7 @@ class DefaultFirebaseOptions {
     appId: '1:563535673587:android:e08e9789da505b66a51f86',
     messagingSenderId: '563535673587',
     projectId: 'changas-ya-cd978',
-    storageBucket: 'changas-ya-cd978.firebasestorage.app',
+    storageBucket: 'changas-ya-cd978.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -63,7 +63,7 @@ class DefaultFirebaseOptions {
     appId: '1:563535673587:ios:4f286fd4426a70d3a51f86',
     messagingSenderId: '563535673587',
     projectId: 'changas-ya-cd978',
-    storageBucket: 'changas-ya-cd978.firebasestorage.app',
+    storageBucket: 'changas-ya-cd978.appspot.com',
     iosBundleId: 'com.example.changasYaApp',
   );
 
@@ -72,7 +72,7 @@ class DefaultFirebaseOptions {
     appId: '1:563535673587:ios:4f286fd4426a70d3a51f86',
     messagingSenderId: '563535673587',
     projectId: 'changas-ya-cd978',
-    storageBucket: 'changas-ya-cd978.firebasestorage.app',
+    storageBucket: 'changas-ya-cd978.appspot.com',
     iosBundleId: 'com.example.changasYaApp',
   );
 
