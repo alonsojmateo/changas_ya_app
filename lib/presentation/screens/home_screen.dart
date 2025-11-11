@@ -2,6 +2,7 @@ import 'package:changas_ya_app/presentation/providers/navigation_provider.dart';
 import 'package:changas_ya_app/presentation/screens/favorite_workers.dart';
 import 'package:changas_ya_app/presentation/screens/jobs_screen.dart';
 import 'package:changas_ya_app/presentation/screens/profile_screen.dart';
+import 'package:changas_ya_app/presentation/screens/create_job_screen.dart'; // ← AGREGAR IMPORT
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:changas_ya_app/presentation/screens/nosotros_screen.dart';
@@ -15,15 +16,13 @@ class HomeScreen extends ConsumerWidget {
 
     final List<Widget> screens = [
       const JobsScreen(),
-      const Center(child: Text("Pantalla de Crear (Pendiente)")),
+      const CreateJobScreen(),
       const FavoriteWorkers(),
       const ProfileScreen(),
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Changas Ya!'),
-      ),
+      appBar: AppBar(title: const Text('Changas Ya!')),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -47,9 +46,7 @@ class HomeScreen extends ConsumerWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const NosotrosScreen(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const NosotrosScreen()),
                 );
               },
             ),
@@ -65,10 +62,7 @@ class HomeScreen extends ConsumerWidget {
           ],
         ),
       ),
-      body: IndexedStack(
-        index: selectedIndex,
-        children: screens,
-      ),
+      body: IndexedStack(index: selectedIndex, children: screens),
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
         onDestinationSelected: (index) {
