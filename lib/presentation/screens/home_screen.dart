@@ -1,4 +1,5 @@
 import 'package:changas_ya_app/presentation/providers/navigation_provider.dart';
+import 'package:changas_ya_app/presentation/screens/create_job_screen.dart';
 import 'package:changas_ya_app/presentation/screens/jobs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +16,7 @@ class HomeScreen extends ConsumerWidget {
 
     final List<Widget> screens = [
       const JobsScreen(),
-      const Center(child: Text("Pantalla de Crear (Pendiente)")),
+      const CreateJobScreen(),
       const Center(child: Text("Pantalla de Favoritos (Pendiente)")),
       const Center(child: Text("Pantalla de Perfil (Pendiente)")),
     ];

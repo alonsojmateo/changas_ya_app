@@ -193,8 +193,8 @@ class _AppChangePassword extends State<ChangePassword> {
                   SizedBox(height: 20.0),
 
                   ElevatedButton(
-                    onPressed: () async {
-                      await _validateChange();
+                    onPressed: () {
+                      validateChange();
                       if (context.mounted) {
                         context.push('/');
                       }

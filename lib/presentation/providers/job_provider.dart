@@ -2,10 +2,16 @@ import 'package:changas_ya_app/Domain/Job/job.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-final currentClientIdProvider = StateProvider<String>(
-  (ref) => 'test-client-mock',
-);
+final currentClientIdProvider = StateProvider<String>((ref) {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user != null) {
+    return user.uid;
+  }
+  return 'anonymous-user';
+});
+
 final firebaseFirestoreProvider = Provider((ref) => FirebaseFirestore.instance);
 
 class JobNotifier extends StateNotifier<List<Job>> {
@@ -16,6 +22,14 @@ class JobNotifier extends StateNotifier<List<Job>> {
 
   Future<void> getPublishedJobsByClient() async {
     try {
+      if (_currentClientId == 'anonymous-user') {
+        print('⚠️ Usuario no autenticado, no se pueden cargar trabajos');
+        state = [];
+        return;
+      }
+
+      print('🔍 Cargando trabajos para cliente: $_currentClientId');
+
       final jobsCollection = _db
           .collection('trabajos')
           .withConverter(
@@ -28,21 +42,37 @@ class JobNotifier extends StateNotifier<List<Job>> {
       );
       final snapshot = await query.get();
       final jobs = snapshot.docs.map((doc) => doc.data()).toList();
+
       state = jobs;
+      print('✅ Trabajos cargados: ${jobs.length}');
     } catch (e) {
-      print('Error al cargar trabajos publicados desde Firebase: $e');
+      print('❌ Error al cargar trabajos: $e');
       state = [];
     }
   }
 
   Future<void> addJob(Map<String, dynamic> jobData) async {
     try {
-      final completeJobData = {...jobData, 'clientId': _currentClientId};
+      if (_currentClientId == 'anonymous-user') {
+        throw Exception('Debes iniciar sesión para crear un trabajo');
+      }
+
+      final completeJobData = {
+        ...jobData,
+        'clientId': _currentClientId,
+        'createdAt': DateTime.now(),
+        'updatedAt': DateTime.now(),
+      };
+
+      print('DATOS COMPLETOS QUE SE GUARDAN EN FIREBASE:');
+      print(completeJobData);
 
       await _db.collection('trabajos').add(completeJobData);
       await getPublishedJobsByClient();
+
+      print('Job creado exitosamente por cliente: $_currentClientId');
     } catch (e) {
-      print('Error al crear job: $e');
+      print('Error al crear trabajo: $e');
       rethrow;
     }
   }
