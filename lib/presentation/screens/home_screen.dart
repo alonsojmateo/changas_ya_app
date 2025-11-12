@@ -54,6 +54,14 @@ class HomeScreen extends ConsumerWidget {
                 );
               },
             ),
+            // Item de prueba
+            ListTile(
+              leading: const Icon(Icons.info_outline),
+              title: const Text('editar perfil'),
+              onTap: () {
+                context.push("/editProfile");
+              },
+            ),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.logout),
