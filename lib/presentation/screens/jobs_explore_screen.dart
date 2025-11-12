@@ -1,23 +1,27 @@
 import 'package:changas_ya_app/Domain/Job/job.dart';
+import 'package:changas_ya_app/Domain/Profile/profile.dart';
 import 'package:changas_ya_app/presentation/providers/job_provider.dart';
+import 'package:changas_ya_app/presentation/providers/profile_provider.dart';
 import 'package:changas_ya_app/presentation/widgets/job_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod/src/framework.dart';
 
-class JobsScreen extends ConsumerStatefulWidget {
+class JobsExplorerScreen extends ConsumerStatefulWidget {
   static const String name = 'jobs';
-  const JobsScreen({super.key});
+  const JobsExplorerScreen({super.key});
+  
   
   @override
-  ConsumerState<JobsScreen> createState() => _JobScreenState();
+  ConsumerState<JobsExplorerScreen> createState() => _JobScreenState();
 }
 
-class _JobScreenState extends ConsumerState<JobsScreen> {
+class _JobScreenState extends ConsumerState<JobsExplorerScreen> {
   bool _isLoading = false;
   final List<DocumentSnapshot?> _pageCursors = []; // Rastrea el último documento de cada página visitada
   final ScrollController _scrollController = ScrollController();
+  Profile? _profile;
 
   @override
   void initState() {
@@ -33,14 +37,18 @@ class _JobScreenState extends ConsumerState<JobsScreen> {
 
   Future<void> _loadInitialData() async {
     setState(() => _isLoading = true);
+    final user = FirebaseAuth.instance.currentUser;
+    _profile ??= await ref.read(professionalFutureProvider(user!.uid).future);
+
     
-    final notifier = ref.read(assignedJobsProvider.notifier);
-    final count = await notifier.countJobsAssignToWorkers();
+    final notifier = ref.read(availableJobsProvider.notifier);
+    final count = await notifier.countAvailableJobsForWorkers();
     ref.read(totalJobsCountProvider.notifier).state = count;
     ref.read(currentPageProvider.notifier).state = 0;
     
     _pageCursors.clear();
-    await notifier.getJobsAssignToWorkers();
+
+    await notifier.getAvailableJobsForWorkers(professionIds: _profile!.trades);
     
     // Almacena el último snapshot de documento de la primera página
     _pageCursors.add(notifier.lastDocumentSnapshot);
@@ -57,12 +65,13 @@ class _JobScreenState extends ConsumerState<JobsScreen> {
     
     setState(() => _isLoading = true);
     
-    await ref.read(assignedJobsProvider.notifier).getJobsAssignToWorkers(
+    await ref.read(availableJobsProvider.notifier).getAvailableJobsForWorkers(
       startAfterDoc: lastDoc,
+      professionIds: _profile!.trades
     );
     
     // Almacena el último snapshot de documento de la nueva página
-    final notifier = ref.read(assignedJobsProvider.notifier);
+    final notifier = ref.read(availableJobsProvider.notifier);
     _pageCursors.add(notifier.lastDocumentSnapshot);
     ref.read(currentPageProvider.notifier).state = currentPage + 1;
     
@@ -85,8 +94,8 @@ class _JobScreenState extends ConsumerState<JobsScreen> {
       cursor = _pageCursors[currentPage - 2];
     }
     
-    final notifier = ref.read(assignedJobsProvider.notifier);
-    await notifier.getJobsAssignToWorkers(startAfterDoc: cursor);
+    final notifier = ref.read(availableJobsProvider.notifier);
+    await notifier.getAvailableJobsForWorkers(startAfterDoc: cursor, professionIds: _profile!.trades);
     
     // Elimina el cursor de la página actual ya que estamos retrocediendo
     _pageCursors.removeLast();
@@ -118,7 +127,7 @@ class _JobScreenState extends ConsumerState<JobsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Job> jobs = ref.watch(assignedJobsProvider);
+    final List<Job> jobs = ref.watch(availableJobsProvider);
     final currentPage = ref.watch(currentPageProvider);
     final totalCount = ref.watch(totalJobsCountProvider);
     final totalPages = totalCount != null 
@@ -198,5 +207,3 @@ class _JobScreenState extends ConsumerState<JobsScreen> {
     );
   }
 }
-
-
