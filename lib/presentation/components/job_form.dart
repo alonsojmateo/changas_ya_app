@@ -189,7 +189,7 @@ class _JobFormState extends ConsumerState<JobForm> {
                   },
                 ),
               ),
-              
+
               ProfessionDropdown(
                 onChanged: (profession) {
                   setState(() {
@@ -273,27 +273,6 @@ class _JobFormState extends ConsumerState<JobForm> {
         ),
       ),
     );
-  }
-
-  IconData _getOfficeIcon(String office) {
-    switch (office) {
-      case 'Plomería':
-        return Icons.plumbing;
-      case 'Electricidad':
-        return Icons.electrical_services;
-      case 'Carpintería':
-        return Icons.carpenter;
-      case 'Pintura':
-        return Icons.format_paint;
-      case 'Albañilería':
-        return Icons.construction;
-      case 'Jardinería':
-        return Icons.grass;
-      case 'Limpieza':
-        return Icons.cleaning_services;
-      default:
-        return Icons.build;
-    }
   }
 
   void _showImagePickerDialog() {
