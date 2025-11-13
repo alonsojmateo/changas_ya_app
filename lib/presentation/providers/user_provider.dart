@@ -1,20 +1,15 @@
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:changas_ya_app/Domain/Profile/profile.dart';
-import 'package:changas_ya_app/core/data/profile_repository.dart';
-import 'package:changas_ya_app/core/Services/firebase_storage_service.dart';
-
-
-/// Provider base de Firestore
-final firebaseFirestoreProvider = Provider((ref) => FirebaseFirestore.instance);
-
-/// Proveedor del UID del usuario actual (por ahora un mock o auth real)
-final currentUserIdProvider = StateProvider<String>((ref) => 'test-user-uid');
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../Domain/Profile/profile.dart';
+import '../../core/data/profile_repository.dart';
+import '../../core/Services/firebase_storage_service.dart';
 
 /// Notifier que maneja un solo perfil
-class UserNotifier extends StateNotifier<Profile?> {
-  final String _currentUserId;
+class UserNotifier extends StateNotifier<AsyncValue<Profile?>> {
+  final String? _currentUserId;
   final FirebaseFirestore _db;
   final ProfileRepository _repo;
   final StorageService _storage;
@@ -22,53 +17,74 @@ class UserNotifier extends StateNotifier<Profile?> {
   UserNotifier(this._currentUserId, this._db)
       : _repo = ProfileRepository(_db),
         _storage = StorageService(),
-        super(null);
-
-  /// Cargar perfil desde Firestore
-  Future<void> fetchUserProfile() async {
-    try {
-      final profile = await _repo.fetchProfileById(_currentUserId);
-      state = profile;
-    } catch (e) {
-      print('❌ Error al obtener perfil: $e');
-      state = null;
+        super(const AsyncValue.loading()) {
+    if (_currentUserId == null || _currentUserId!.isEmpty) {
+      state = const AsyncValue.data(null);
+    } else {
+      fetchUserProfile();
     }
   }
 
-  /// Actualizar la foto de perfil
-  Future<void> updateProfileImage(File file) async {
-    if (state == null) return;
-
+  /// Cargar perfil desde Firestore
+  Future<void> fetchUserProfile() async {
+    if (_currentUserId == null) return;
     try {
-      final imageUrl = await _storage.uploadUserImage(file, _currentUserId);
-      await _repo.updateProfilePhoto(_currentUserId, imageUrl);
+      final profile = await _repo.fetchProfileById(_currentUserId!);
+      if (profile != null) {
+        state = AsyncValue.data(profile);
+      } else {
+        state = AsyncValue.error('Perfil no encontrado', StackTrace.current);
+      }
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
 
-      // Actualiza el estado local
-      state = Profile(
-        uid: state!.uid,
-        name: state!.name,
-        email: state!.email,
-        isWorker: state!.isWorker,
-        phone: state!.phone,
-        address: state!.address,
-        photoUrl: imageUrl,
-        opinions: state!.opinions,
-        trades: state!.trades,
-      );
-    } catch (e) {
-      print('❌ Error al actualizar foto: $e');
+  /// Actualizar foto de perfil (móvil)
+  Future<void> updateProfileImage(File file) async {
+    if (_currentUserId == null) return;
+    try {
+      final imageUrl = await _storage.uploadUserImage(file, _currentUserId!);
+      await _repo.updateProfilePhoto(_currentUserId!, imageUrl);
+
+      final current = state.value;
+      if (current != null) {
+        final updated = current.copyWith(photoUrl: imageUrl);
+        state = AsyncValue.data(updated);
+      }
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+      rethrow;
+    }
+  }
+
+  /// Actualizar foto de perfil (web)
+  Future<void> updateProfileImageWeb(XFile file) async {
+    if (_currentUserId == null) return;
+    try {
+      final imageUrl = await _storage.uploadUserImageWeb(file, _currentUserId!);
+      await _repo.updateProfilePhoto(_currentUserId!, imageUrl);
+
+      final current = state.value;
+      if (current != null) {
+        final updated = current.copyWith(photoUrl: imageUrl);
+        state = AsyncValue.data(updated);
+      }
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
       rethrow;
     }
   }
 }
 
-/// Proveedor principal del perfil del usuario actual
-final userProvider = StateNotifierProvider<UserNotifier, Profile?>((ref) {
-  final userId = ref.watch(currentUserIdProvider);
-  final db = ref.watch(firebaseFirestoreProvider);
-
-  final notifier = UserNotifier(userId, db);
-  notifier.fetchUserProfile(); // 🔥 carga automática al iniciar
-
-  return notifier;
+/// Provider que expone UserNotifier
+final userProvider = StateNotifierProvider<UserNotifier, AsyncValue<Profile?>>((ref) {
+  final userId = FirebaseAuth.instance.currentUser?.uid;
+  final db = FirebaseFirestore.instance;
+  return UserNotifier(userId, db);
 });
+
+
+
+
+

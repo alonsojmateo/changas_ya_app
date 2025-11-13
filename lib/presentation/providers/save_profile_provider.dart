@@ -1,9 +1,6 @@
 import 'package:changas_ya_app/Domain/Profile/profile.dart';
 import 'package:changas_ya_app/core/data/profile_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-
 import 'profile_provider.dart'; 
 
 class SaveProfileNotifier extends StateNotifier<AsyncValue<void>> {
