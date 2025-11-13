@@ -1,5 +1,7 @@
 import 'package:changas_ya_app/presentation/providers/job_detail_provider.dart';
+import 'package:changas_ya_app/presentation/providers/job_provider.dart';
 import 'package:changas_ya_app/presentation/widgets/profile_card.dart';
+import 'package:changas_ya_app/presentation/widgets/rate_worker_card.dart';
 import 'package:changas_ya_app/presentation/widgets/worker_section.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -27,8 +29,6 @@ class JobDetail extends ConsumerWidget {
       }
     });
 
-    final selectedRating = 0;
-    // final selectedRating = ref.watch(ratingProvider(jobId));
     final selectedPayment = ref.watch(paymentMethodProvider(jobId));
 
     return Scaffold(
@@ -74,15 +74,67 @@ class JobDetail extends ConsumerWidget {
                               label: Text(option),
                               selected: selectedPayment == option,
                               onSelected: (_) {
-                                ref.read(paymentMethodProvider(jobId).notifier,).state = option;
+                                ref
+                                        .read(
+                                          paymentMethodProvider(jobId).notifier,
+                                        )
+                                        .state =
+                                    option;
                               },
                             ),
                         ],
                       ),
+                      const SizedBox(height: 20),
+
+                      (job.status != "Finalizado")
+                          ? ElevatedButton(
+                              onPressed: () async {
+                                final jobNotifier = ref.read(
+                                  jobProvider.notifier,
+                                );
+                                final success = await jobNotifier
+                                    .endJob(jobId)
+                                    .then((_) => true)
+                                    .catchError((_) => false);
+
+                                String message = success
+                                    ? 'Trabajo finalizado con éxito!'
+                                    : 'Error: No se pudo asignar el trabajo.';
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(message)),
+                                );
+
+                                if (success) {
+                                  Navigator.pop(context);
+                                }
+                              },
+                              style: ButtonStyle(
+                                backgroundColor: WidgetStateProperty.all(
+                                  Colors.green,
+                                ),
+                                foregroundColor: WidgetStateProperty.all(
+                                  Colors.white,
+                                ),
+                                shape: WidgetStateProperty.all(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25.0),
+                                  ),
+                                ),
+                              ),
+                              child: const Text("Finalizar Trabajo"),
+                            )
+                          : Text("Fecha finalizacion: ${job.formattedDateEnd}"),
 
                       const SizedBox(height: 20),
-                      Text('Fecha de inicio: ${job.dateStart}'),
-                      Text('Fecha de fin: ${job.dateEnd}'),
+
+                      if (job.status == "Finalizado") ...[
+                        const SizedBox(height: 20),
+                        RateWorkerCard(
+                          professionalId: job.workerId!,
+                          jobId: job.id,
+                        ),
+                      ],
                     ],
                   )
                 : Column(
@@ -96,8 +148,8 @@ class JobDetail extends ConsumerWidget {
                           onPressed: () {
                             final jobId = job.id;
                             context.pushNamed(
-                              'bids', 
-                              pathParameters: {'jobId': jobId}, 
+                              'bids',
+                              pathParameters: {'jobId': jobId},
                             );
                           },
                           child: const Text("Ver Postulaciones"),

@@ -1,4 +1,7 @@
+import 'package:changas_ya_app/presentation/providers/job_provider.dart';
 import 'package:changas_ya_app/presentation/providers/profile_provider.dart';
+import 'package:changas_ya_app/presentation/providers/rating_provider.dart';
+import 'package:changas_ya_app/presentation/widgets/rating_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,6 +15,7 @@ class ProfileCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(professionalFutureProvider(profileId));
+    final jobsCount = ref.watch(totalJobsProvider(profileId));
 
     return profile.when(
       loading: () => const Card(
@@ -47,7 +51,11 @@ class ProfileCard extends ConsumerWidget {
         final tradesToShow = profile.trades.take(_maxTradesVisible);
         final hasMoreTrades = (profile.trades.length) > _maxTradesVisible;
 
-        final completedJobs = 35; 
+        final completedJobs = jobsCount.when(
+          data: (count) => count,
+          loading: () => const Text('Trabajos realizados: ...'),
+          error: (e, s) => const Text('Error al contar trabajos'),
+        ); 
 
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
@@ -91,20 +99,7 @@ class ProfileCard extends ConsumerWidget {
                           ),
                           const SizedBox(width: 8),
                           if (profile.isProfessional)
-                            Chip(
-                              label: Text(
-                                // Usa el rating o un valor por defecto si es null
-                                'Cal. ${(profile.rating).toStringAsFixed(1)}',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              backgroundColor: Colors.green.shade500,
-                              padding: EdgeInsets.zero,
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                            ),
+                            RatingChip(profileId: profileId)
                         ],
                       ),
                       // Mostramos en caso de que sea profesional y tenga trabajos completados
