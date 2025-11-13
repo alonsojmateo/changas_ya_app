@@ -33,8 +33,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   late final TextEditingController _photoController = TextEditingController();
   //Lista de controladores para cada entrad de oficio.
   late List<TextEditingController> _tradesControllers = [];
-  // Lista de Widgets de entrada de texto para cada oficio.
-  late List<Row> _tradesFields = [];
 
   void _addTradesControllers(List<String> userTrades) {
     if (userTrades.isNotEmpty) {
