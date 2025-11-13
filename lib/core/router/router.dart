@@ -1,6 +1,5 @@
 import 'package:changas_ya_app/Domain/Job/job.dart';
 import 'package:changas_ya_app/presentation/screens/bids_screen.dart';
-import 'package:changas_ya_app/presentation/screens/favorite_workers.dart';
 import 'package:changas_ya_app/presentation/screens/home_screen.dart';
 import 'package:changas_ya_app/presentation/screens/job_detail.dart';
 import 'package:changas_ya_app/presentation/screens/jobs_screen.dart';
