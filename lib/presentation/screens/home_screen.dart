@@ -4,6 +4,10 @@ import 'package:changas_ya_app/presentation/screens/jobs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:changas_ya_app/presentation/screens/nosotros_screen.dart';
+import 'package:flutter_riverpod/legacy.dart';
+
+final jobsScreenRefreshProvider = StateProvider<Future<void> Function()?>((ref) => null);
+
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -20,9 +24,7 @@ class HomeScreen extends ConsumerWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Changas Ya!'),
-      ),
+      appBar: AppBar(title: const Text('Changas Ya!')),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -46,9 +48,7 @@ class HomeScreen extends ConsumerWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const NosotrosScreen(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const NosotrosScreen()),
                 );
               },
             ),
@@ -64,14 +64,23 @@ class HomeScreen extends ConsumerWidget {
           ],
         ),
       ),
-      body: IndexedStack(
-        index: selectedIndex,
-        children: screens,
-      ),
+      body: IndexedStack(index: selectedIndex, children: screens),
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
-        onDestinationSelected: (index) {
-          ref.read(selectedTabIndexProvider.notifier).state = index;
+
+        onDestinationSelected: (index) async {
+          final notifier = ref.read(selectedTabIndexProvider.notifier);
+
+    if (index == selectedIndex && index == 0) {
+      // 👇 Buscamos el contexto del JobsScreen y ejecutamos su método público
+      final state = ref
+          .read(jobsScreenRefreshProvider.notifier)
+          .state;
+
+      if (state != null) state();
+    } else {
+      notifier.state = index;
+    }
         },
         destinations: const [
           NavigationDestination(
