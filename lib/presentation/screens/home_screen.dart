@@ -1,10 +1,16 @@
 import 'package:changas_ya_app/presentation/providers/navigation_provider.dart';
+import 'package:changas_ya_app/presentation/screens/jobs_explore_screen.dart';
 import 'package:changas_ya_app/presentation/screens/favorite_workers.dart';
 import 'package:changas_ya_app/presentation/screens/jobs_screen.dart';
 import 'package:changas_ya_app/presentation/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:changas_ya_app/presentation/screens/nosotros_screen.dart';
+import 'package:flutter_riverpod/legacy.dart';
+
+final jobsScreenRefreshProvider = StateProvider<Future<void> Function()?>(
+  (ref) => null,
+);
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -15,6 +21,8 @@ class HomeScreen extends ConsumerWidget {
 
     final List<Widget> screens = [
       const JobsScreen(),
+      const JobsExplorerScreen(),
+      const Center(child: Text("Pantalla de Favoritos (Pendiente)")),
       const ProfileScreen(),
     ];
 
@@ -62,14 +70,33 @@ class HomeScreen extends ConsumerWidget {
       body: IndexedStack(index: selectedIndex, children: screens),
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
-        onDestinationSelected: (index) {
-          ref.read(selectedTabIndexProvider.notifier).state = index;
+
+        onDestinationSelected: (index) async {
+          final notifier = ref.read(selectedTabIndexProvider.notifier);
+
+          if (index == selectedIndex && index == 0) {
+            final state = ref.read(jobsScreenRefreshProvider.notifier).state;
+
+            if (state != null) state();
+          } else {
+            notifier.state = index;
+          }
         },
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.work_outline),
             selectedIcon: Icon(Icons.work),
             label: 'Trabajos',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.search_outlined),
+            selectedIcon: Icon(Icons.search),
+            label: 'Explorar',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.favorite_outline),
+            selectedIcon: Icon(Icons.favorite),
+            label: 'Favoritos',
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outline),
