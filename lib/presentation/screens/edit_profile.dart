@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:changas_ya_app/presentation/providers/professional_provider.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:changas_ya_app/Domain/Profile/profile.dart';
 import 'package:changas_ya_app/presentation/providers/save_profile_provider.dart';
 import 'package:changas_ya_app/core/Services/field_validation.dart';
 import 'package:changas_ya_app/core/Services/user_auth_controller.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
@@ -19,6 +23,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   final FieldValidation validation = FieldValidation();
   final UserAuthController _auth = UserAuthController();
+  final ImagePicker _picker = ImagePicker();
 
   String userId = '';
   bool isWorker = false;
@@ -147,6 +152,38 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(snackBar);
     });
   }
+  Future<XFile?> _addImageFile () async {
+    final XFile? selectedImage = await _picker.pickImage(source: ImageSource.gallery);
+    return selectedImage;
+  }
+
+  Future<SnackBar> _uploadImage() async {
+    String snackBarMessage= '';
+    Color? snackBarColor = Colors.red[400];
+
+    try{
+      XFile? imageToUpload = await _addImageFile();
+
+      if (imageToUpload != null){
+        String imagePath = 'usuarios/$userId/profile_image_${DateTime.now().millisecondsSinceEpoch}.jpg';
+        Reference storageRef = FirebaseStorage.instance.ref().child(imagePath);
+        UploadTask uploadTask = storageRef.putFile(File(imageToUpload.path));
+        await uploadTask;
+        snackBarMessage = "¡Archivo guardado con exito!";
+        snackBarColor = Colors.green[400];
+      } else {
+        snackBarMessage = "No se pudo guarda la imagen.";
+      } 
+    }catch (e) {
+        snackBarMessage = "Ocurrió un error al procesar la imagen. Formatos permitidos: PNG, JPG.";
+    }
+
+    SnackBar snackBar =SnackBar(content: Text(snackBarMessage), backgroundColor: snackBarColor,);
+    return snackBar;
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -257,8 +294,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
                   Center(
                     child: ElevatedButton(
-                      onPressed: () {
-                        // TODO: Implement image picker and set _photoController.text with the selected file path.
+                      onPressed: () async {
+                        final SnackBar notification = await _uploadImage();
+                        if (context.mounted) 
+                        { 
+                          ScaffoldMessenger.of(context).showSnackBar(notification);
+                        }
                       },
                       child: Text("Seleccionar foto de perfil"),
                     ),
