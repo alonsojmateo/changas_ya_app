@@ -1,7 +1,8 @@
 import 'package:changas_ya_app/Domain/Job/job.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 
 final currentClientIdProvider = StateProvider<String>(
   (ref) => 'test-client-mock',

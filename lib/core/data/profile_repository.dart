@@ -40,7 +40,7 @@ class ProfileRepository {
   }
 
   Future<void> registerUserProfile(Profile data, String? uuid) async {
-    final String dbCollection = "usuarios";
+    const String dbCollection = "usuarios";
     final String userId = uuid ?? _db.collection(dbCollection).doc().id;
     final userData = <String, dynamic>{
       "email": data.email,

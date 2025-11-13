@@ -70,13 +70,13 @@ class ChangePassword extends ConsumerWidget {
   }
   
     // Insets for text field alignment
-    final EdgeInsets textFieldsInset = EdgeInsets.symmetric(
+    const EdgeInsets textFieldsInset = EdgeInsets.symmetric(
       vertical: 10.0,
       horizontal: 20.0,
     );
     // Banner attributes.
-    final String bannerImage = 'lib/images/change_password_banner.png';
-    final String bannerTitle = 'Cambio de contraseña';
+    const String bannerImage = 'lib/images/change_password_banner.png';
+    const String bannerTitle = 'Cambio de contraseña';
     final textStyle = Theme.of(context).textTheme;
     final TextStyle titleStyle = TextStyle(
       fontSize: textStyle.titleLarge?.fontSize ?? 20.0,
@@ -87,7 +87,7 @@ class ChangePassword extends ConsumerWidget {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
+        preferredSize: const Size.fromHeight(kToolbarHeight),
         child: CustomAppBar(),
       ),
       resizeToAvoidBottomInset: true,
@@ -115,7 +115,7 @@ class ChangePassword extends ConsumerWidget {
                           inputEmail = emailController.text;
                         }
                       },
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'E-Mail',
                       ),
@@ -137,7 +137,7 @@ class ChangePassword extends ConsumerWidget {
                         }
                       },
                       obscureText: true,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Contraseña anterior',
                       ),
@@ -159,7 +159,7 @@ class ChangePassword extends ConsumerWidget {
                         }
                       },
                       obscureText: true,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Nueva contraseña',
                       ),
@@ -176,7 +176,7 @@ class ChangePassword extends ConsumerWidget {
                     child: TextFormField(
                       controller: confirmedNewPasswordController,
                       obscureText: true,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Confirmar nueva contraseña',
                       ),
@@ -193,7 +193,7 @@ class ChangePassword extends ConsumerWidget {
                     ),
                   ),
 
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
 
                   ElevatedButton(
                     onPressed: ()  async {
@@ -206,7 +206,7 @@ class ChangePassword extends ConsumerWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue[400],
                     ),
-                    child: Text(
+                    child: const Text(
                       'Cambiar contraseña',
                       style: TextStyle(color: Colors.white),
                     ),

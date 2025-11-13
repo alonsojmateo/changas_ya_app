@@ -59,7 +59,7 @@ class AppLogin extends ConsumerWidget {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
+        preferredSize: const Size.fromHeight(kToolbarHeight),
         child: CustomAppBar(),
       ),
       resizeToAvoidBottomInset: true,
@@ -80,7 +80,7 @@ class AppLogin extends ConsumerWidget {
               ),
 
               Container(
-                margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
+                margin: const EdgeInsets.only(top: 5.0, bottom: 10.0),
                 child: Text(
                   '> Ingrese a la aplicación <',
                   style: textStyle.titleLarge,
@@ -88,7 +88,7 @@ class AppLogin extends ConsumerWidget {
               ),
 
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 10.0),
+                margin: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: TextFormField(
                   controller: emailController,
                   onChanged: (String nameValue) {
@@ -97,7 +97,7 @@ class AppLogin extends ConsumerWidget {
                     }
                   },
                   obscureText: false,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'E-Mail',
                   ),
@@ -108,10 +108,10 @@ class AppLogin extends ConsumerWidget {
                 ),
               ),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 10.0),
+                margin: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: TextFormField(
                   controller: passwordController,
                   onChanged: (String passwordValue) {
@@ -120,7 +120,7 @@ class AppLogin extends ConsumerWidget {
                     }
                   },
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Contraseña',
                   ),
@@ -141,7 +141,7 @@ class AppLogin extends ConsumerWidget {
                 ),
               ),
 
-              SizedBox(height: 10.0),
+              const SizedBox(height: 10.0),
  
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -161,15 +161,15 @@ class AppLogin extends ConsumerWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue[400],
                     ),
-                    child: Text(
+                    child: const Text(
                       'Iniciar sesión',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
 
-                  SizedBox(width: 10.0),
-                  Text("ó"),
-                  SizedBox(width: 10.0),
+                  const SizedBox(width: 10.0),
+                  const Text("ó"),
+                  const SizedBox(width: 10.0),
 
                   ElevatedButton(
                     onPressed: () {
@@ -186,7 +186,7 @@ class AppLogin extends ConsumerWidget {
                 ],
               ),
 
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

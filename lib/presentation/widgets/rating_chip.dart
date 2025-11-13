@@ -11,14 +11,14 @@ class RatingChip extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final averageRatingAsync = ref.watch(averageRatingProvider(profileId));
     return averageRatingAsync.when(
-      loading: () => Row(
+      loading: () => const Row(
         mainAxisSize: MainAxisSize.min,
         children: [Text("...")],
       ),
 
-      error: (e, s) => Text(
+      error: (e, s) => const Text(
         'Cal. Error',
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 12,
           color: Color.fromARGB(255, 252, 183, 193),
         ),

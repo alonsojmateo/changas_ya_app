@@ -19,7 +19,7 @@ class BidRepository {
 
     return jobFilteredQuery.snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
-        return Bid.fromFirestore(doc.data() as Map<String, dynamic>, doc.id);
+        return Bid.fromFirestore(doc.data(), doc.id);
       }).toList();
     });
   }

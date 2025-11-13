@@ -57,14 +57,14 @@ class RatingRepository {
         });
       });
 
-    } on FirebaseException catch(e) {
+    } on FirebaseException {
       throw Exception('Fallo al subir nuevo rating');
     }
   }
 
   Future<double?> getExistingRatingScore(String jobId, String reviewerId) async {
     // Genero el mismo id de la funcion submit 
-    final String ratingId = '${jobId}_${reviewerId}';
+    final String ratingId = '${jobId}_$reviewerId';
     
     final doc = await _db.collection(_collectionName).doc(ratingId).get();
 
@@ -82,7 +82,7 @@ class RatingRepository {
         return average ?? 0; // average o 0 si no existe el average
       }
       return 0.0; // doc no existe
-    } on FirebaseException catch(e) {
+    } on FirebaseException {
       print("Error al calcular promedio");
       return 0.0;
     }

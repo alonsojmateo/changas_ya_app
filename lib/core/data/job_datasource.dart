@@ -4,7 +4,7 @@ List<Job> getMockJobsByClient(String clientId) {
   
   // Usaremos una fecha base para simular la antigüedad
   final now = DateTime.now();
-  final String fakeClientId = 'tesst2-client-mock';
+  const String fakeClientId = 'tesst2-client-mock';
   return [
     // 1. TRABAJO EN MARCHA (Ejemplo de trabajo en progreso)
     Job(

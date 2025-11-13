@@ -78,11 +78,11 @@ class JobCard extends StatelessWidget {
                 ),
               ),
               
-              Column(
+              const Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Icon(Icons.access_alarm, size: 22, color: Color.fromARGB(255, 249, 158, 39)), 
-                  const Icon(Icons.more_vert, size: 22, color: Colors.grey), 
+                  Icon(Icons.access_alarm, size: 22, color: Color.fromARGB(255, 249, 158, 39)), 
+                  Icon(Icons.more_vert, size: 22, color: Colors.grey), 
                 ],
               ),
             ],

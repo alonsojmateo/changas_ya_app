@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:changas_ya_app/Domain/Bid/bid.dart';
 import 'package:changas_ya_app/presentation/providers/job_provider.dart';
@@ -45,21 +44,21 @@ class BidDetailsModal extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Mano de obra"),
+              const Text("Mano de obra"),
               Text(bid.budgetManpower.toString()),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [Text("Repuestos"), Text(bid.budgetSpares.toString())],
+            children: [const Text("Repuestos"), Text(bid.budgetSpares.toString())],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Total"),
+              const Text("Total"),
               Text(
                 bid.budgetTotal.toString(),
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ],
           ),

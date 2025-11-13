@@ -1,9 +1,6 @@
 import 'package:changas_ya_app/Domain/Bid/bid.dart';
-import 'package:changas_ya_app/presentation/providers/profile_provider.dart';
-import 'package:changas_ya_app/presentation/widgets/profile_card.dart';
 import 'package:changas_ya_app/presentation/widgets/simple_profile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class BidCard extends StatelessWidget {
   final Bid bid;
@@ -21,7 +18,7 @@ class BidCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(12.00),
         child: Padding(
-          padding: EdgeInsets.all(16.00),
+          padding: const EdgeInsets.all(16.00),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

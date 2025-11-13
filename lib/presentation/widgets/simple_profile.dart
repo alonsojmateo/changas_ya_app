@@ -65,7 +65,7 @@ class SimpleProfile extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
-                        'Presupuesto: ${budgetTotal}',
+                        'Presupuesto: $budgetTotal',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,

@@ -1,6 +1,5 @@
 import 'package:changas_ya_app/presentation/providers/job_detail_provider.dart';
 import 'package:changas_ya_app/presentation/providers/job_provider.dart';
-import 'package:changas_ya_app/presentation/widgets/profile_card.dart';
 import 'package:changas_ya_app/presentation/widgets/worker_section.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:changas_ya_app/core/Services/firebase_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,20 +13,19 @@ class ProfileScreen extends ConsumerWidget {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      final user = ref.read(userProvider);
-      if (user == null) return;
-
       final file = File(pickedFile.path);
-      final storage = StorageService();
-      final imageUrl = await storage.uploadUserImage(file, user.getEmail());
-
-      // Actualizamos el usuario con la nueva URL
-      user.setFotoUrl(imageUrl);
-      ref.read(userProvider.notifier).state = user;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Imagen actualizada correctamente')),
-      );
+      try {
+        await ref
+            .read(userProvider.notifier)
+            .updateProfileImage(file); // 👈 delegamos al provider
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Imagen actualizada correctamente')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al subir la imagen: $e')),
+        );
+      }
     }
   }
 
@@ -54,9 +52,11 @@ class ProfileScreen extends ConsumerWidget {
               children: [
                 CircleAvatar(
                   radius: 60,
-                  backgroundImage: user.getFotoUrl().startsWith('http')
-                      ? NetworkImage(user.getFotoUrl())
-                      : AssetImage(user.getFotoUrl()) as ImageProvider,
+                  backgroundImage: (user.photoUrl != null &&
+                          user.photoUrl!.startsWith('http'))
+                      ? NetworkImage(user.photoUrl!)
+                      : const AssetImage('assets/default_avatar.png')
+                          as ImageProvider,
                 ),
                 IconButton(
                   icon: const Icon(Icons.camera_alt, color: Colors.blue),
@@ -65,21 +65,23 @@ class ProfileScreen extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 10),
-            Text(user.getName(), style: textStyle.titleLarge),
-            Text(user.getEmail()),
-            Text(user.getDireccion()),
-            Text(user.getTelefono()),
+            Text(user.name, style: textStyle.titleLarge),
+            Text(user.email),
+            if (user.address != null) Text(user.address!),
+            if (user.phone != null) Text(user.phone!),
             const SizedBox(height: 20),
             Text('Opiniones:', style: textStyle.titleMedium),
             const SizedBox(height: 10),
-            ...user.getOpiniones().map(
+            ...user.opinions.map(
               (opinion) => Card(
                 elevation: 2,
                 margin: const EdgeInsets.only(bottom: 10),
                 child: ListTile(
-                  title: Text(opinion.comentario),
-                  trailing: Text('${opinion.calificacion} ⭐',
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  title: Text(opinion.comment),
+                  trailing: Text(
+                    '${opinion.rating} ⭐',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
             ),

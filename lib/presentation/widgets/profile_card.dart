@@ -1,6 +1,5 @@
 import 'package:changas_ya_app/presentation/providers/job_provider.dart';
 import 'package:changas_ya_app/presentation/providers/profile_provider.dart';
-import 'package:changas_ya_app/presentation/providers/rating_provider.dart';
 import 'package:changas_ya_app/presentation/widgets/rating_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

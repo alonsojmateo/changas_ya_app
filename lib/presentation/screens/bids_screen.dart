@@ -3,7 +3,6 @@ import 'package:changas_ya_app/presentation/providers/bid_provider.dart';
 import 'package:changas_ya_app/presentation/widgets/bid_card.dart';
 import 'package:changas_ya_app/presentation/widgets/bid_details_modal.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class BidsScreen extends ConsumerWidget {

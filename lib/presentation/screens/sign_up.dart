@@ -72,12 +72,12 @@ class SignUp extends ConsumerWidget {
       return registerSucced;
     }
 
-    final EdgeInsets textFieldsInset = EdgeInsets.symmetric(
+    const EdgeInsets textFieldsInset = EdgeInsets.symmetric(
       vertical: 10.0,
       horizontal: 20.0,
     );
-    final String titleImage = 'lib/images/signup_banner.png';
-    final String screenTitle = 'Registro de ususrio';
+    const String titleImage = 'lib/images/signup_banner.png';
+    const String screenTitle = 'Registro de ususrio';
     final textStyle = Theme.of(context).textTheme;
     final TextStyle titleStyle = TextStyle(
       fontSize: textStyle.titleLarge?.fontSize ?? 20.0,
@@ -88,7 +88,7 @@ class SignUp extends ConsumerWidget {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
+        preferredSize: const Size.fromHeight(kToolbarHeight),
         child: CustomAppBar(),
       ),
       resizeToAvoidBottomInset: true,
@@ -118,7 +118,7 @@ class SignUp extends ConsumerWidget {
                         }
                       },
                       obscureText: false,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Nombre de usuario',
                       ),
@@ -135,7 +135,7 @@ class SignUp extends ConsumerWidget {
                           inputEmail = emailController.text;
                         }
                       },
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'E-Mail',
                       ),
@@ -157,7 +157,7 @@ class SignUp extends ConsumerWidget {
                         }
                       },
                       obscureText: true,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Contraseña',
                       ),
@@ -180,7 +180,7 @@ class SignUp extends ConsumerWidget {
                         // }
                       },
                       obscureText: true,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Confirmar contraseña',
                       ),
@@ -197,7 +197,7 @@ class SignUp extends ConsumerWidget {
                     ),
                   ),
 
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
 
                   ElevatedButton(
                     onPressed: () async {
@@ -209,7 +209,7 @@ class SignUp extends ConsumerWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue[400],
                     ),
-                    child: Text(
+                    child: const Text(
                       'Registrarse',
                       style: TextStyle(color: Colors.white),
                     ),

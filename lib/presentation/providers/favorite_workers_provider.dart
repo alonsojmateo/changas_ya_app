@@ -32,7 +32,7 @@ final favoriteWorkersProvider = StreamProvider<List<Professional>>((ref) async* 
     final professionals = querySnapshot.docs
         .where((doc) => doc.data()['isWorker'] == true)
         .map((doc) {
-          final data = doc.data() as Map<String, dynamic>;
+          final data = doc.data();
           data['id'] = doc.id;
           return Professional.fromFirestore(data);
         })
