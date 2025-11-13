@@ -35,8 +35,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   // Lista de Widgets de entrada de texto para cada oficio.
   late List<TextFormField> _tradesFields = [];
 
-  void _addField() {
-    final tradeController = TextEditingController();
+
+  void _addTradesControllers(List<String> userTrades){
+    if (userTrades.isNotEmpty){
+      for(String trade in userTrades){
+        _addField(trade);
+      }
+    } else {
+      _addField(null);
+    }
+  }
+
+  void _addField(String? tradeValue) {
+    final tradeController = TextEditingController(text: tradeValue);
     _tradesControllers.add(tradeController);
     int numOfControllers = _tradesControllers.length;
     _tradesFields.add(
@@ -55,7 +66,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     }
   }
 
-  // Obtengo los datos de los oficios
+  // Obtengo los datos de los oficios desde los controladores.
   List<String> obtainTradesList() {
     final List<String> trades = _tradesControllers
         .map((tradeController) => tradeController.text)
@@ -80,20 +91,25 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
       if (userProfile == null) throw Exception();
 
+      // Hago la llamada a la nueva función que crea los nuevos text fields
+      _addTradesControllers(userProfile.trades);
+      // Esto debería cargar los datos iguales para todos los oficios del usuario.
+
+
       //Obtengo la lista de oficios
       // la convierto en una lista de TextEditingControllers con los datos cargados en la variable text.
-      final List<TextEditingController> loadedControllers = userProfile.trades
-          .map((trade) {
-            return TextEditingController(text: trade);
-          })
-          .toList();
+      // final List<TextEditingController> loadedControllers = userProfile.trades
+      //     .map((trade) {
+      //       return TextEditingController(text: trade);
+      //     })
+      //     .toList();
 
       // Hago lo mismo para los _tradesFields. Con esto logro mostrar en pantalla los oficios.
-      final List<TextFormField> tradesLoaded = userProfile.trades.asMap().entries.map((trades) {
-        return TextFormField(initialValue: trades.value, readOnly: true,);
-      }).toList();
+      // final List<TextFormField> tradesLoaded = userProfile.trades.asMap().entries.map((trades) {
+      //   return TextFormField(initialValue: trades.value, readOnly: true,);
+      // }).toList();
 
-      _tradesFields = tradesLoaded;
+      //_tradesFields = tradesLoaded;
 
       userId = userProfile.uid;
       isWorker = userProfile.isWorker;
@@ -103,7 +119,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       _phoneController.text = userProfile.phone ?? '';
       _photoController.text = userProfile.photoUrl ?? '';
       //Le asigno a la lista de controladores los nuevos controladores obtenido de la DB.
-      _tradesControllers = loadedControllers;
+      //_tradesControllers = loadedControllers;
 
       snackBarMessage = "¡Datos cargados correctamente!";
       snackBarColor = Colors.green[400];
@@ -243,7 +259,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                               shrinkWrap: true,
                             ),
                             ElevatedButton(
-                              onPressed: _addField,
+                              onPressed: () =>_addField(null),
                               child: Text("Añadir oficio"),
                             ),
                           ],
