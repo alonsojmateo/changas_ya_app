@@ -1,4 +1,5 @@
 import 'package:changas_ya_app/presentation/providers/professional_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:changas_ya_app/Domain/Profile/profile.dart';
@@ -33,12 +34,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   //Lista de controladores para cada entrad de oficio.
   late List<TextEditingController> _tradesControllers = [];
   // Lista de Widgets de entrada de texto para cada oficio.
-  late List<TextFormField> _tradesFields = [];
+  late List<Row> _tradesFields = [];
 
-
-  void _addTradesControllers(List<String> userTrades){
-    if (userTrades.isNotEmpty){
-      for(String trade in userTrades){
+  void _addTradesControllers(List<String> userTrades) {
+    if (userTrades.isNotEmpty) {
+      for (String trade in userTrades) {
         _addField(trade);
       }
     } else {
@@ -49,18 +49,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   void _addField(String? tradeValue) {
     final tradeController = TextEditingController(text: tradeValue);
     _tradesControllers.add(tradeController);
-    int numOfControllers = _tradesControllers.length;
-    _tradesFields.add(
-      TextFormField(
-        controller: tradeController,
-        decoration: InputDecoration(
-          labelText: "Oficio $numOfControllers",
-          border: const OutlineInputBorder(),
-        ),
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        validator: (String? text) => validation.validateTrades(text),
-      ),
-    );
+    // int numOfControllers = _tradesControllers.length;
+    // _tradesFields.add(
+    //   FormRemovableTextField(tradeController: tradeController, numOfControllers: numOfControllers, validation: validation),
+    // );
     if (mounted) {
       setState(() {});
     }
@@ -95,22 +87,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       _addTradesControllers(userProfile.trades);
       // Esto debería cargar los datos iguales para todos los oficios del usuario.
 
-
-      //Obtengo la lista de oficios
-      // la convierto en una lista de TextEditingControllers con los datos cargados en la variable text.
-      // final List<TextEditingController> loadedControllers = userProfile.trades
-      //     .map((trade) {
-      //       return TextEditingController(text: trade);
-      //     })
-      //     .toList();
-
-      // Hago lo mismo para los _tradesFields. Con esto logro mostrar en pantalla los oficios.
-      // final List<TextFormField> tradesLoaded = userProfile.trades.asMap().entries.map((trades) {
-      //   return TextFormField(initialValue: trades.value, readOnly: true,);
-      // }).toList();
-
-      //_tradesFields = tradesLoaded;
-
       userId = userProfile.uid;
       isWorker = userProfile.isWorker;
       _nameController.text = userProfile.name;
@@ -133,8 +109,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     return newSanckBar;
   }
 
-  void RemoveTrade (int index){
-    _tradesFields.removeAt(index);
+  void removeTrade(int index) async {
+    _tradesControllers[index].dispose();
+    _tradesControllers.removeAt(index);
+    await registerData();
+    setState(() { });
   }
 
   // Guarda los nuevos datos del usuario en la base de datos.
@@ -230,12 +209,15 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
                   //Si es profecional permito que cargue más oficios
                   isWorker
-                      ? Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Row(
-                                children: const [
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .center, // Alinea a la izquierda
+                                children: [
                                   Icon(Icons.work, color: Colors.blueAccent),
                                   SizedBox(width: 8.0),
                                   Text(
@@ -247,22 +229,32 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                                   ),
                                 ],
                               ),
-                            ),
-                            ListView.builder(
-                              itemCount: _tradesFields.length,
-                              itemBuilder: (context, index) {
+
+                              const SizedBox(height: 15.0),
+
+                              ..._tradesControllers.asMap().entries.map((
+                                entry,
+                              ) {
+                                final int index = entry.key;
+
                                 return Padding(
-                                  padding: const EdgeInsets.only(bottom: 15.0),
-                                  child: _tradesFields[index],
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: FormRemovableTextField(
+                                    tradeController: _tradesControllers[index],
+                                    index: index,
+                                    callback: () => removeTrade(index),
+                                    validation: validation,
+                                  ),
                                 );
-                              },
-                              shrinkWrap: true,
-                            ),
-                            ElevatedButton(
-                              onPressed: () =>_addField(null),
-                              child: Text("Añadir oficio"),
-                            ),
-                          ],
+                              }),
+                              const SizedBox(height: 15.0),
+
+                              ElevatedButton(
+                                onPressed: () => _addField(null),
+                                child: Text("Añadir oficio"),
+                              ),
+                            ],
+                          ),
                         )
                       : const SizedBox.shrink(),
 
@@ -290,7 +282,46 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 }
 
+class FormRemovableTextField extends StatelessWidget {
+  const FormRemovableTextField({
+    super.key,
+    required this.tradeController,
+    required this.index,
+    required this.callback,
+    required this.validation,
+  });
 
+  final TextEditingController tradeController;
+  final int index;
+  final Function()? callback;
+  final FieldValidation validation;
+
+  @override
+  Widget build(BuildContext context) {
+    return 
+        Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                controller: tradeController,
+                decoration: InputDecoration(
+                  labelText: "Oficio ${index + 1}",
+                  border: const OutlineInputBorder(),
+                ),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (String? text) => validation.validateTrades(text),
+              ),
+            ),
+            SizedBox(width: 8.0,),
+            TextButton.icon(
+              icon: Icon(Icons.close),
+              onPressed: callback,
+              label: Text(''),
+            )
+          ],
+        );
+  }
+}
 
 class InputTextField extends StatelessWidget {
   const InputTextField({
