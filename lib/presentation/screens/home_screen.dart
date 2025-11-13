@@ -6,8 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:changas_ya_app/presentation/screens/nosotros_screen.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
-final jobsScreenRefreshProvider = StateProvider<Future<void> Function()?>((ref) => null);
-
+final jobsScreenRefreshProvider = StateProvider<Future<void> Function()?>(
+  (ref) => null,
+);
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -71,16 +72,13 @@ class HomeScreen extends ConsumerWidget {
         onDestinationSelected: (index) async {
           final notifier = ref.read(selectedTabIndexProvider.notifier);
 
-    if (index == selectedIndex && index == 0) {
-      // 👇 Buscamos el contexto del JobsScreen y ejecutamos su método público
-      final state = ref
-          .read(jobsScreenRefreshProvider.notifier)
-          .state;
+          if (index == selectedIndex && index == 0) {
+            final state = ref.read(jobsScreenRefreshProvider.notifier).state;
 
-      if (state != null) state();
-    } else {
-      notifier.state = index;
-    }
+            if (state != null) state();
+          } else {
+            notifier.state = index;
+          }
         },
         destinations: const [
           NavigationDestination(
