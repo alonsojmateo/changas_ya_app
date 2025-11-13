@@ -45,10 +45,10 @@ class Job {
 
   String get formattedDateEnd {
     if (dateEnd == null) {
-      return 'Fecha no definida'; 
+      return 'Fecha no definida';
     }
-    
-    final formatter = DateFormat('dd/MM/yyyy'); 
+
+    final formatter = DateFormat('dd/MM/yyyy');
     return formatter.format(dateEnd!);
   }
 
