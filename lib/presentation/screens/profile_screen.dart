@@ -22,7 +22,7 @@ class ProfileScreen extends ConsumerWidget {
     dynamic profileAvatar = AssetImage('lib/images/profile_avatar_anonymous_user.png');
     if (user.getFotoUrl().isNotEmpty && user.getFotoUrl().contains("://")){
       profileAvatar = NetworkImage(user.getFotoUrl());
-    } else {
+    } else if (user.getFotoUrl().isNotEmpty) {
       profileAvatar = AssetImage(user.getFotoUrl());
     }
 

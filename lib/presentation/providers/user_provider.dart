@@ -9,11 +9,12 @@ import 'package:firebase_auth/firebase_auth.dart' as fb;
 final userProvider = StateNotifierProvider<UserNotifier, User?>((ref) {
 
   final notifier = UserNotifier();
-  
+
   final auth = ref.watch(authStateChangesProvider);
   auth.whenData((userData) {
     if (userData == null ){
       notifier.clearState();
+      return;
     }
     notifier.loadUserData();
   });
