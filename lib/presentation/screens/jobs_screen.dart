@@ -3,6 +3,7 @@ import 'package:changas_ya_app/presentation/providers/job_provider.dart';
 import 'package:changas_ya_app/presentation/widgets/job_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:changas_ya_app/presentation/providers/auth_provider.dart';
 
 class JobsScreen extends ConsumerStatefulWidget {
   static const String name = 'jobs';
@@ -18,7 +19,7 @@ class _JobScreenState extends ConsumerState<JobsScreen> {
   void initState() {
     super.initState();
   }
-
+  @override
   Widget build(BuildContext context) {
     final String clientId = ref.watch(currentUserIdProvider); 
     final List<Job> jobs = ref.watch(jobProvider);
