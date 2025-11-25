@@ -52,6 +52,10 @@ class SimpleProfile extends ConsumerWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                  ],
+                ),
+                Row(
+                  children: [
                     const SizedBox(width: 8),
                     RatingChip(profileId: profile.uid),
                     const SizedBox(width: 8),
