@@ -10,6 +10,7 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider);
+    
 
     if (user == null) {
       return const Scaffold(
@@ -18,6 +19,12 @@ class ProfileScreen extends ConsumerWidget {
     }
 
     final textStyle = Theme.of(context).textTheme;
+    dynamic profileAvatar = AssetImage('lib/images/profile_avatar_anonymous_user.png');
+    if (user.getFotoUrl().isNotEmpty && user.getFotoUrl().contains("://")){
+      profileAvatar = NetworkImage(user.getFotoUrl());
+    } else if (user.getFotoUrl().isNotEmpty) {
+      profileAvatar = AssetImage(user.getFotoUrl());
+    }
 
     return Scaffold(
       appBar: AppBar(title: const Text('Mi Perfil')),
@@ -28,7 +35,7 @@ class ProfileScreen extends ConsumerWidget {
           children: [
             CircleAvatar(
               radius: 60,
-              backgroundImage: AssetImage(user.getFotoUrl()),
+              backgroundImage: profileAvatar,
             ),
 
             const SizedBox(height: 20),

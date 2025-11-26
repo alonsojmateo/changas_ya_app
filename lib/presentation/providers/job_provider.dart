@@ -4,23 +4,24 @@ import 'package:changas_ya_app/Domain/Job/job.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:changas_ya_app/presentation/providers/auth_provider.dart';
 
-final firebaseAuthProvider = Provider((ref) => FirebaseAuth.instance);
+//final firebaseAuthProvider = Provider((ref) => FirebaseAuth.instance);
 
-final authStateChangesProvider = StreamProvider<User?>((ref) {
-  return ref.watch(firebaseAuthProvider).authStateChanges();
-});
+// final authStateChangesProvider = StreamProvider<User?>((ref) {
+//   return ref.watch(firebaseAuthProvider).authStateChanges();
+// });
 
-final currentUserIdProvider = Provider<String>((ref) {
-  final authState = ref.watch(authStateChangesProvider);
+// final currentUserIdProvider = Provider<String>((ref) {
+//   final authState = ref.watch(authStateChangesProvider);
   
-  return authState.maybeWhen(
-    data: (user) => user?.uid ?? 'invitado',
-    orElse: () => 'invitado', 
-  );
-});
+//   return authState.maybeWhen(
+//     data: (user) => user?.uid ?? 'invitado',
+//     orElse: () => 'invitado', 
+//   );
+// });
 
 final firebaseFirestoreProvider = Provider((ref) => FirebaseFirestore.instance);
 
@@ -54,11 +55,12 @@ class JobNotifier extends StateNotifier<List<Job>> {
       );
       final snapshot = await query.get();
       final jobs = snapshot.docs.map((doc) => doc.data()).toList();
-
-      state = jobs;
+      if (mounted){
+        state = jobs;
+      }
+      
     } catch (e) {
-      print('Error al cargar trabajos publicados desde Firebase: $e');
-      state = [];
+      print('Error al cargar trabajos publicados desde Firebase: $e');      
     }
   }
 
