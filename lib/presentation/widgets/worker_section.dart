@@ -1,5 +1,6 @@
 import 'package:changas_ya_app/presentation/providers/favorite_workers_provider.dart';
 import 'package:changas_ya_app/presentation/widgets/profile_card.dart';
+import 'package:changas_ya_app/presentation/widgets/worker_phone_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -68,6 +69,9 @@ class WorkerSection extends ConsumerWidget {
         ),
         ProfileCard(profileId: professionalId),
         const SizedBox(height: 20),
+        WorkerPhoneRow(profileId: professionalId),
+        const SizedBox(height: 20),
+        
       ],
     );
   }
