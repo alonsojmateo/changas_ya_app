@@ -19,7 +19,7 @@ class Bannerwidget extends StatelessWidget {
       margin: EdgeInsets.all(20.0),
       padding: EdgeInsets.all(10.0),
       width: double.infinity,
-      height: 160,
+      height: 170,
       decoration: BoxDecoration(
         color: Colors.blue[400],
         borderRadius: BorderRadius.all(Radius.circular(15.0))
