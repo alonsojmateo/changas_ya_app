@@ -10,6 +10,7 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider);
+    
 
     if (user == null) {
       return const Scaffold(
@@ -18,39 +19,132 @@ class ProfileScreen extends ConsumerWidget {
     }
 
     final textStyle = Theme.of(context).textTheme;
+    dynamic profileAvatar = AssetImage('lib/images/profile_avatar_anonymous_user.png');
+    if (user.getFotoUrl().isNotEmpty && user.getFotoUrl().contains("://")){
+      profileAvatar = NetworkImage(user.getFotoUrl());
+    } else if (user.getFotoUrl().isNotEmpty) {
+      profileAvatar = AssetImage(user.getFotoUrl());
+    }
 
     return Scaffold(
       appBar: AppBar(title: const Text('Mi Perfil')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CircleAvatar(
               radius: 60,
-              backgroundImage: AssetImage(user.getFotoUrl()),
+              backgroundImage: profileAvatar,
             ),
-            const SizedBox(height: 10),
-            Text(user.getName(), style: textStyle.titleLarge),
-            const SizedBox(height: 5),
-            Text(user.getEmail()),
-            Text(user.getDireccion()),
-            Text(user.getTelefono()),
+
             const SizedBox(height: 20),
-            Text(
-              'Opiniones:',
-              style: textStyle.titleMedium,
+            Card(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      user.getName(),
+                      style: textStyle.titleLarge,
+                      textAlign: TextAlign.center,
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.email, size: 18),
+                        const SizedBox(width: 6),
+                        Text(user.getEmail(), textAlign: TextAlign.center),
+                      ],
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.location_on, size: 18),
+                        const SizedBox(width: 6),
+                        Text(user.getDireccion(), textAlign: TextAlign.center),
+                      ],
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.phone, size: 18),
+                        const SizedBox(width: 6),
+                        Text(user.getTelefono(), textAlign: TextAlign.center),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(height: 10),
-            ...user.getOpiniones().map(
-              (opinion) => Card(
-                elevation: 2,
-                margin: const EdgeInsets.only(bottom: 10),
-                child: ListTile(
-                  title: Text(opinion.comentario),
-                  trailing: Text(
-                    '${opinion.calificacion} ⭐',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Opiniones",
+                      style: textStyle.titleMedium,
+                      textAlign: TextAlign.center,
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    if (user.getOpiniones().isEmpty)
+                      const Text(
+                        "Sin opiniones aún",
+                        textAlign: TextAlign.center,
+                      )
+                    else
+                      ...user.getOpiniones().map(
+                        (opinion) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Column(
+                            children: [
+                              Text(
+                                opinion.comentario,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(fontSize: 15),
+                              ),
+
+                              const SizedBox(height: 6),
+
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(
+                                  5,
+                                  (i) => Icon(
+                                    i < opinion.calificacion
+                                        ? Icons.star
+                                        : Icons.star_border,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),

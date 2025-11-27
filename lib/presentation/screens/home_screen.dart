@@ -1,28 +1,34 @@
 import 'package:changas_ya_app/presentation/providers/navigation_provider.dart';
 import 'package:changas_ya_app/presentation/screens/favorite_workers.dart';
 import 'package:changas_ya_app/presentation/screens/jobs_screen.dart';
+import 'package:changas_ya_app/presentation/screens/profile_screen.dart';
+import 'package:changas_ya_app/presentation/screens/create_job_screen.dart'; // ← AGREGAR IMPORT
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:changas_ya_app/presentation/screens/nosotros_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'package:changas_ya_app/presentation/widgets/log_out_alert.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedIndex = ref.watch(selectedTabIndexProvider);
+    
+
 
     final List<Widget> screens = [
       const JobsScreen(),
-      const Center(child: Text("Pantalla de Crear (Pendiente)")),
+      const CreateJobScreen(),
       const FavoriteWorkers(),
-      const Center(child: Text("Pantalla de Perfil (Pendiente)")),
+      const ProfileScreen(),
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Changas Ya!'),
-      ),
+      appBar: AppBar(title: const Text('Changas Ya!')),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -46,10 +52,16 @@ class HomeScreen extends ConsumerWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const NosotrosScreen(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const NosotrosScreen()),
                 );
+              },
+            ),
+            // Item de prueba
+            ListTile(
+              leading: const Icon(Icons.info_outline),
+              title: const Text('editar perfil'),
+              onTap: () {
+                context.push("/editProfile");
               },
             ),
             const Divider(),
@@ -57,17 +69,18 @@ class HomeScreen extends ConsumerWidget {
               leading: const Icon(Icons.logout),
               title: const Text('Cerrar sesión'),
               onTap: () {
-                // TODO: implementar logout cuando esté lista la funcionalidad
-                Navigator.pop(context);
+                Navigator.pop(context); // <-- cierra el drawer menu.
+                showDialog(
+                  context: context,
+                  builder: (context) => LogOutAlert(),
+                );
+                //context.push("/logout");
               },
             ),
           ],
         ),
       ),
-      body: IndexedStack(
-        index: selectedIndex,
-        children: screens,
-      ),
+      body: IndexedStack(index: selectedIndex, children: screens),
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
         onDestinationSelected: (index) {

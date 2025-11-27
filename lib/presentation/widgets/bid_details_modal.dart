@@ -15,7 +15,7 @@ class BidDetailsModal extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      height: 400,
+      height: 500,
       padding: const EdgeInsets.all(15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,7 +86,7 @@ class BidDetailsModal extends ConsumerWidget {
 
                   String message = success
                       ? 'Trabajo asignado con éxito!'
-                      : '⚠️ Error: No se pudo asignar el trabajo. Intente de nuevo.';
+                      : 'Error: No se pudo asignar el trabajo.';
 
                   ScaffoldMessenger.of(
                     context,
